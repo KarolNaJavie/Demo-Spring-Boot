@@ -1,48 +1,17 @@
 package com.example.demo.model;
 
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+
 public class Student {
+    int id;
     String name;
     String surname;
-    int id;
-    String language;
-
-    public Student(String name, String surname, int id, String language) {
-        this.name = name;
-        this.surname = surname;
-        this.id = id;
-        this.language = language;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+    Language language;
 }
 // Student id imie nazwisko jezyk

@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ProjektXApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjektXApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(ProjektXApplication.class, args);
 
 
-	}
+    }
 
     //DO POCZYTANIA
     //Controller, service, repository, encja, model, dto, czym sa adnotacje i do czego uzywamy, czym sa endpointy, doczego sluza
@@ -24,4 +24,8 @@ public class ProjektXApplication {
     //StudentController, StrudenService itd
 
 
+//Stworzyc analogiczna metoda dla geta dla obiektow ktore mamy findall i delete
+    //enum jezyki zastapic stringa
+    //poczytac o metodach http get, post*, put, patch, delete
+    //
 }
