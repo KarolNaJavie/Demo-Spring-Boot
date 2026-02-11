@@ -2,34 +2,54 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Teacher;
 import com.example.demo.service.TeacherService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/Teachers")
+@RequestMapping("/teachers")
 public class TeacherController {
 
     private final TeacherService teacherService;
 
-    @GetMapping("/all")
-    public List<Teacher> getAll() {
-        return teacherService.findAll();
-    }
 
+//    @PostMapping("/create")
+//    public String create(Teacher teacher){}
+
+    @GetMapping("/list")
+    public String getAll(Model model){
+        model.addAttribute("teachers", teacherService.findAll());
+        return "teachers/list";
+    }
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
         teacherService.deleteByID(id);
     }
+
+//              Atrybut  │ Co robi                │ Przykład                                                  │
+//            ├──────────┼────────────────────────┼───────────────────────────────────────────────────────────┤
+//            │ th:text  │ Wstawia tekst          │ <p th:text="${student.firstName}">Jan</p>                 │
+//            ├──────────┼────────────────────────┼───────────────────────────────────────────────────────────┤
+//            │ th:each  │ Pętla (jak for)        │ <tr th:each="s : ${students}">                            │
+//            ├──────────┼────────────────────────┼───────────────────────────────────────────────────────────┤
+//            │ th:href  │ Dynamiczny link        │ <a th:href="@{/students/{id}(id=${student.id})}">Link</a> │
+//            ├──────────┼────────────────────────┼───────────────────────────────────────────────────────────┤
+//            │ th:value │ Wartość inputa/selecta │ <option th:value="${language}">                           │
+//            ├──────────┼────────────────────────┼───────────────────────────────────────────────────────────┤
+//            │ th:if    │ Warunek (jak if)       │ <div th:if="${student.teacher != null}">                  │
+//            └──────────┴────────────────────────┴──────────────────────────────────────
+
+
+    //DO ZROBIENIA NA CZWARTEK:
+    // ZROB WIECEJ OBIEKTOW ZEBY BYLO CO WYSWIETLIC (Z PELNA ILOSC POL)
+    //DODAJ logowanie SLF4J tak jak w teacher repo do innych repo
+    //STWORZ WIZUALIZACJE TABEL DLA LESSON I STUNDENT (OSOBNE HTML)
+    //SQL DEVELOPER ALBO SQL WORKBENCH I DOCKER
 
 
 }

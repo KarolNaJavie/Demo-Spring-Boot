@@ -11,6 +11,7 @@ public class ProjektXApplication {
 
 
     }
+//    http://localhost:8080/
 
     //DO POCZYTANIA
     //Controller, service, repository, encja, model, dto, czym sa adnotacje i do czego uzywamy, czym sa endpointy, doczego sluza

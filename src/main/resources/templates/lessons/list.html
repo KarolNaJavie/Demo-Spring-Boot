@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Listy</title>
+</head>
+<body>
+<h1>Lessons</h1>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>STUDENT</th>
+            <th>TEACHER</th>
+            <th>DATE</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="lesson : ${lessons} ">
+            <td th:text="${lesson.id}"></td>
+            <td th:text="${lesson.student}"></td>
+            <td th:text="${lesson.teacher}"></td>
+            <td th:text="${lesson.termin}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
+<!--public class Lesson {-->
+<!--int id;-->
+<!--Student student;-->
+<!--Teacher teacher;-->
+<!--LocalDate termin;-->
+<!--}-->

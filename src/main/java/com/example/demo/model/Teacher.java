@@ -15,6 +15,13 @@ public class Teacher {
     String surname;
     List<Language> language;
 
+    @Override
+    public String toString() {
+        return name + " " + surname;
+    }
+    public void addLanguage(Language language){
+        this.language.add(language);
+    }
 //    public Teacher(int id, String name, String surname, List<String> language) {
 //        this.id = id;
 //        this.name = name;

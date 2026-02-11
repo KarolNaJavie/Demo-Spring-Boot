@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Listy</title>
+</head>
+<body>
+<h1>Students</h1>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>SURNAME</th>
+            <th>LANGUAGE</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student : ${students} ">
+            <td th:text="${student.id}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.surname}"></td>
+            <td th:text="${student.language}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -17,6 +17,6 @@ public class LessonService {
     }
 
     public void deleteByID(int id) {
-        ;lessonRepository.deleteByID(id);
+        lessonRepository.deleteByID(id);
     }
 }

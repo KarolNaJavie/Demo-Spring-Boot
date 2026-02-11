@@ -13,5 +13,10 @@ public class Student {
     String name;
     String surname;
     Language language;
+
+    @Override
+    public String toString() {
+        return name + " " + surname;
+    }
 }
 // Student id imie nazwisko jezyk
