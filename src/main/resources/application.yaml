@@ -1,3 +1,8 @@
 spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/coding
+    username: root
+    password: ROOT
+    driverClassName: com.mysql.cj.jdbc.Driver
   application:
     name: Projekt X

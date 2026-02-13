@@ -28,8 +28,9 @@ public class TeacherController {
     }
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        teacherService.deleteByID(id);
+        teacherService.deleteById(id);
     }
+
 
 //              Atrybut  │ Co robi                │ Przykład                                                  │
 //            ├──────────┼────────────────────────┼───────────────────────────────────────────────────────────┤
@@ -51,5 +52,15 @@ public class TeacherController {
     //STWORZ WIZUALIZACJE TABEL DLA LESSON I STUNDENT (OSOBNE HTML)
     //SQL DEVELOPER ALBO SQL WORKBENCH I DOCKER
 
+    //Analogicznie do teachera dodac dla studenta:
+    //id z odpowiednimi adnotacjami i adnotacja oznaczjaca encje, id bedzie generwoane (to samo co techaer)
+    //stowrzyc tabele dla studenta tak samo jak teacher
+    //wyprostowac controller - service - repo  zeby bylo jak dla teachera
+    //ustawic repo dla studenta tak jak dla teachera korzystajac rowniez z jpa
+    // usunac pozostalosci zeby projekt sie odpala i wszystkis mieci czyt. kom
+    //narazie pominac lesson i relacje miedzy klasami dla uproszczenia
+    // jpa ma taka metoda jak save, mozesz ja wykorzsytac aby zapisac do bazy nowego teachera, mozesz sprobowac zaimplementowac endpoint POST do tworzenia
+    //nowego teachera/studenta cale flow jak dla innnych tylko tutaj na koncu wykorzsytaj metode teacherRepository.save(tu przekazujesz Techera)
+    // gdzies na tym etapie nie bedziesz wiedzial czemu ci nie dziala albo co dalej, to wlasnie wtedy do mnie napisz :D
 
 }

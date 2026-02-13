@@ -1,5 +1,9 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 
 import java.util.List;
@@ -9,19 +13,22 @@ import java.util.List;
 @AllArgsConstructor //@NoArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 public class Teacher {
-    int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
     String name;
     String surname;
-    List<Language> language;
+//    List<Language> language;
 
     @Override
     public String toString() {
         return name + " " + surname;
     }
-    public void addLanguage(Language language){
-        this.language.add(language);
-    }
+//    public void addLanguage(Language language){
+//        this.language.add(language);
+//    }
 //    public Teacher(int id, String name, String surname, List<String> language) {
 //        this.id = id;
 //        this.name = name;

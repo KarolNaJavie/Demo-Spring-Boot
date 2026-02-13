@@ -17,8 +17,8 @@ public class TeacherService {
         return teacherRepository.findAll();
     }
 
-    public void deleteByID(int id) {
-        teacherRepository.deleteByID(id);
+    public void deleteById(long id) {
+        teacherRepository.deleteById(id);
     }
 
 }

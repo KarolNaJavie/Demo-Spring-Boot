@@ -1,5 +1,9 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 
 @Getter
@@ -7,12 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
+@Entity
 public class Student {
-    int id;
+    @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
     String name;
     String surname;
-    Language language;
+//    Language language;
 
     @Override
     public String toString() {

@@ -16,7 +16,7 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public void deleteByID(int id) {
-        studentRepository.deleteByID(id);
+    public void deleteById(long id) {
+        studentRepository.deleteById(id);
     }
 }
