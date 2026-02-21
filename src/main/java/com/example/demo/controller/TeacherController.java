@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Language;
 import com.example.demo.model.Teacher;
 import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,37 @@ public class TeacherController {
         model.addAttribute("teachers", teacherService.findAll());
         return "teachers/list";
     }
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    @GetMapping("/{id}")
+    public String delete(@PathVariable long id) {
         teacherService.deleteById(id);
+        return "redirect:/teachers/list";
+    }
+
+    @GetMapping("/create")
+    public String createFrom(Model model){
+        model.addAttribute("languages", Language.values());
+        return "teachers/register";
+    }
+
+    @PostMapping("/create")
+    public String save (Teacher teacher){
+        teacherService.save(teacher);
+        return "redirect:/teachers/list";
+    }
+
+    @GetMapping("{id}/edit")
+    public String editFrom(@PathVariable Long id, Model model){
+        Teacher teacher = teacherService.findById(id);
+        model.addAttribute("teacher", teacher);
+        model.addAttribute("languages", Language.values());
+        return "teachers/edit";
+    }
+
+    @PostMapping("{id}/edit")
+    public String update(@PathVariable Long id, Teacher teacher){
+        teacher.setId(id);
+        teacherService.save(teacher);
+        return "redirect:/teachers/list";
     }
 
 

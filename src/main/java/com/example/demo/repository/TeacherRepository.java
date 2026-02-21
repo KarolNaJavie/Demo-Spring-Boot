@@ -16,20 +16,15 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 //    private int nextID = 1;
 
 //    @PostConstruct
-//    void init() {
-//        log.info("Inicjalizacja obiektow teacher");
-//        Teacher teacher1 = new Teacher(nextID, "Adrian", "Brygider", new ArrayList<>());
-//        teacher1.addLanguage(Language.JAVA);
-//        nextID++;
-//        teachers.add(teacher1);
-//        Teacher teacher2 = new Teacher(nextID, "Terry", "Davis", new ArrayList<>());
-//        teacher2.addLanguage(Language.HOLYC);
-//        nextID++;
-//        teachers.add(teacher2);
-//        Teacher teacher3 = new Teacher(nextID, "Albert", "Einstein", new ArrayList<>());
-//        nextID++;
-//        teachers.add(teacher3);
-//        teacher3.addLanguage(Language.C);
+//    default void init() {
+//        Teacher teacher1 = new Teacher(null, "Adrian", "Brygider");
+//        save(teacher1);
+//
+//        Teacher teacher2 = new Teacher(null, "Terry", "Davis");
+//        save(teacher2);
+//        Teacher teacher3 = new Teacher(null, "Albert", "Einstein");
+//        save(teacher3);
+//
 //    }
 //
 //    public List<Teacher> findAll();

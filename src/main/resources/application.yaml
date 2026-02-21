@@ -6,3 +6,5 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
   application:
     name: Projekt X
+  jpa:
+    show-sql: true

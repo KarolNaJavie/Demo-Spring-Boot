@@ -19,4 +19,12 @@ public class StudentService {
     public void deleteById(long id) {
         studentRepository.deleteById(id);
     }
+
+    public void save(Student student){
+        studentRepository.save(student);
+    }
+
+    public Student findById (Long id){
+        return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found: " + id ));
+    }
 }

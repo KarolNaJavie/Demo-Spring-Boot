@@ -6,8 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor //@NoArgsConstructor
@@ -17,10 +15,10 @@ import java.util.List;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
-    String surname;
-//    List<Language> language;
+    private Long id;
+    private String name;
+    private String surname;
+//    Language language;
 
     @Override
     public String toString() {
