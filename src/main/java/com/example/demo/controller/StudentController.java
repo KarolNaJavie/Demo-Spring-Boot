@@ -53,13 +53,8 @@ public class StudentController {
         return "redirect:/students/list";
     }
 
-    //Teraz to samo co mamy w studencie chcemy mie dla teacher czyli DODAWANI USUWANIE I EDYCJE , narzie
-    //pomijamy jezyki mozesz je zakomentowac w pizdu
-    // formularze maja wygladac analogicznie
-//    ⭐ ZADANIE BONUS (dla chętnych):
-//    Dodaj stronę potwierdzenia po edycji:
-//
-//    Zamiast redirect na listę, pokaż stronę: "✅ Dane studenta zostały zaktualizowane!" z linkiem "Wróć do listy".
-//
-//
+    // ⭐ ZADANIE BONUS (dla chętnych):
+    // Zamiast redirect na listę po edycji, pokaż stronę z potwierdzeniem:
+    // "✅ Dane studenta zostały zaktualizowane!" z linkiem "Wróć do listy".
+
 }
