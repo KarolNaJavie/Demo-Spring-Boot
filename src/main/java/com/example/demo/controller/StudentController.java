@@ -33,8 +33,8 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public String save (Student student){
-        studentService.save(student);
+    public String save (Student student, Long teacherId){
+        studentService.save(student, teacherId);
         return "redirect:/students/list";
     }
 
@@ -43,13 +43,14 @@ public class StudentController {
         Student student = studentService.findById(id);
         model.addAttribute("student", student);
         model.addAttribute("languages", Language.values());
+        //jak dla languages findall z teacherow
         return "students/edit";
     }
 
     @PostMapping("{id}/edit")
-    public String update (@PathVariable Long id, Student student){
+    public String update (@PathVariable Long id, Student student, Long teacherId){
         student.setId(id);
-        studentService.save(student);
+        studentService.save(student, teacherId);
         return "redirect:/students/list";
     }
 

@@ -44,8 +44,11 @@ public class Teacher {
     //   zmienisz kolejność wartości w enumie, stare rekordy w bazie zmienią sens.
     //   Zawsze używaj EnumType.STRING — kod jest czytelniejszy i bezpieczniejszy.
     // -------------------------------------------------------------------------
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "teacher_language", joinColumns = @JoinColumn(name = "teacher_id"))
+    @Column(name = "language")  //language z kolekcji w bazie
     @Enumerated(EnumType.STRING)
-    private Language language;
+    private Set<Language> languages;
 
     // -------------------------------------------------------------------------
     // @OneToMany – jeden nauczyciel ma wielu studentów

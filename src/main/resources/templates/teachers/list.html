@@ -71,7 +71,7 @@
     <a href="/lessons/list">📅 Lekcje</a>
 </div>
 
-<h1>📚 Lista Nauczycieli</h1>
+<h1>👨‍🏫 Lista Nauczycieli</h1>
 
 <div style="margin-bottom: 20px;">
     <a href="/teachers/create" class="btn btn-add">➕ Dodaj nowego nauczyciela</a>
@@ -92,7 +92,7 @@
         <td th:text="${teacher.id}"></td>
         <td th:text="${teacher.name}"></td>
         <td th:text="${teacher.surname}"></td>
-        <td th:text="${teacher.language}"></td>
+        <td th:text="${teacher.languages}"></td>
 
         <td>
             <a th:href="@{/teachers/{id}/edit(id=${teacher.id})}"
