@@ -93,7 +93,7 @@
         <td th:text="${student.id}"></td>
         <td th:text="${student.name}"></td>
         <td th:text="${student.surname}"></td>
-        <td ></td>
+        <td th:text="${student.language}"></td>
         <td th:text="${student.teacher != null ? student.teacher.name + ' ' + student.teacher.surname : '-'}"></td>
         <td>
             <a th:href="@{/students/{id}/edit(id=${student.id})}"

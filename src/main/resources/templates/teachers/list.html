@@ -1,29 +1,112 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Listy</title>
+    <title>Lista Nauczycieli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .nav {
+            margin-bottom: 20px;
+        }
+        .nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #2196F3;
+            font-weight: bold;
+        }
+        .btn-add {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-add:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<h1>Teachers</h1>
-<div>
+<div class="nav">
+    <a href="/students/list">📚 Studenci</a>
+    <a href="/teachers/list">👨‍🏫 Nauczyciele</a>
+    <a href="/lessons/list">📅 Lekcje</a>
+</div>
+
+<h1>📚 Lista Nauczycieli</h1>
+
+<div style="margin-bottom: 20px;">
+    <a href="/teachers/create" class="btn btn-add">➕ Dodaj nowego nauczyciela</a>
+</div>
+
 <table>
     <thead>
     <tr>
         <th>ID</th>
-        <th>NAME</th>
-        <th>SURNAME</th>
-
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Język</th>
+        <th>Akcje</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="teacher : ${teachers} ">
+    <tr th:each="teacher : ${teachers}">
         <td th:text="${teacher.id}"></td>
         <td th:text="${teacher.name}"></td>
         <td th:text="${teacher.surname}"></td>
+        <td th:text="${teacher.language}"></td>
+
+        <td>
+            <a th:href="@{/teachers/{id}/edit(id=${teacher.id})}"
+               style="background-color: #2196F3; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-size: 14px; margin-right: 5px;">
+                ✏️ Edytuj
+            </a>
+            <a th:href="@{/teachers/{id}(id=${teacher.id})}" class="delete-btn">Usuń</a>
+        </td>
     </tr>
     </tbody>
 </table>
-</div>
 </body>
 </html>
+
+
+
+

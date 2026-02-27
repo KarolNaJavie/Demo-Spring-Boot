@@ -16,7 +16,7 @@ public class LessonService {
         return lessonRepository.findAll();
     }
 
-    public void deleteByID(int id) {
-        lessonRepository.deleteByID(id);
+    public void deleteById(long id) {
+        lessonRepository.deleteById(id);
     }
 }

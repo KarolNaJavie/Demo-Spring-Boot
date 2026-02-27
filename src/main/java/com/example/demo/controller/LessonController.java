@@ -21,12 +21,14 @@ public class LessonController {
     @GetMapping("/list")
     public String getAll(Model model) {
         model.addAttribute("lessons", lessonService.findAll());
+        List<Lesson> lessons = lessonService.findAll(); // pobiera wszystkie lekcje z DB
+        System.out.println("Liczba lekcji: " + lessons.size());
         return "lessons/list";
     }
 
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        lessonService.deleteByID(id);
+        lessonService.deleteById(id);
     }
 }

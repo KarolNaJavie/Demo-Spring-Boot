@@ -3,6 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Listy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #da190b;
+        }
+        .nav {
+            margin-bottom: 20px;
+        }
+        .nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #2196F3;
+            font-weight: bold;
+        }
+        .btn-add {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-add:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
 <h1>Lessons</h1>
@@ -21,7 +81,7 @@
             <td th:text="${lesson.id}"></td>
             <td th:text="${lesson.student}"></td>
             <td th:text="${lesson.teacher}"></td>
-            <td th:text="${lesson.termin}"></td>
+            <td th:text="${lesson.datetime}"></td>
         </tr>
         </tbody>
     </table>

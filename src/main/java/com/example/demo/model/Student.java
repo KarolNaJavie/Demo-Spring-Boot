@@ -3,6 +3,9 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,6 +20,7 @@ public class Student {
 
     String name;
     String surname;
+
 
     // -------------------------------------------------------------------------
     // @Enumerated(EnumType.STRING)
@@ -47,6 +51,9 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToMany(mappedBy = "student")
+    private Set<Lesson> lessons;
 
     @Override
     public String toString() {

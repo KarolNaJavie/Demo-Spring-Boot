@@ -63,6 +63,9 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher")
     private Set<Student> students;
 
+    @OneToMany(mappedBy = "teacher")
+    private Set<Lesson> lessons;
+
     @Override
     public String toString() {
         return name + " " + surname;

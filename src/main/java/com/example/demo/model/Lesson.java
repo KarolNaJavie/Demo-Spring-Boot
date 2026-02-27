@@ -17,7 +17,7 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private LocalDateTime termin;
+   private LocalDateTime datetime;
 
     // =========================================================================
     // TWOJE ZADANIE
@@ -36,4 +36,12 @@ public class Lesson {
     //     (strona "jeden" — tak jak Set<Student> w Teacher)
     //   - mappedBy po stronie odwrotnej wskazuje na pole w tej klasie
     // =========================================================================
+
+      @ManyToOne
+     @JoinColumn(name = "teacher_id")
+     private Teacher teacher;
+
+      @ManyToOne
+     @JoinColumn(name = "student_id")
+     private Student student;
 }
