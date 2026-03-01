@@ -1,14 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Lesson;
+import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,6 +16,8 @@ import java.util.List;
 @RequestMapping("/lessons")
 public class LessonController {
     private final LessonService lessonService;
+    private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     @GetMapping("/list")
     public String getAll(Model model) {
@@ -26,6 +27,18 @@ public class LessonController {
         return "lessons/list";
     }
 
+    @GetMapping("/create")
+    public String createFrom(Model model) {
+    model.addAttribute("teachers", teacherRepository.findAll());
+    model.addAttribute("students", studentRepository.findAll());
+    return "lessons/register";
+    }
+
+    @PostMapping("/create")
+    public String save (Lesson lesson, Long teacherId, Long studentId){
+        lessonService.save(lesson, teacherId, studentId);
+        return "redirect:/lessons/list";
+    }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
