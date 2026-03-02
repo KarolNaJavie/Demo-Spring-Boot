@@ -9,7 +9,9 @@ import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +29,23 @@ public class LessonService {
     }
 
     public void save(Lesson lesson, Long teacherId, Long studentId) {
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(()-> new RuntimeException("Teacher not found: " + teacherId));
-        Student student = studentRepository.findById(studentId).orElseThrow(()-> new RuntimeException("Student not found: " + studentId));
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Teacher not found: " + teacherId));
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found: " + studentId));
         lesson.setTeacher(teacher);
         lesson.setStudent(student);
-        lessonRepository.save(lesson);
+        boolean teacherBusy = false;
+        Set<Lesson> teachersLessons = teacher.getLessons();
+
+        for (Lesson teachersLesson : teachersLessons) {
+            teacherBusy = lesson.getDatetime() == teachersLesson.getDatetime();
+        }
+
+        if (lesson.getDatetime().isAfter(LocalDateTime.now()) && !teacherBusy) {
+            lessonRepository.save(lesson);
+        } else {
+            throw new RuntimeException("Termin zajety lub nieprawidlowy");
+        }
     }
 }
