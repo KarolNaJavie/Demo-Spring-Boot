@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Language;
 import com.example.demo.model.Teacher;
+import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,7 @@ public class TeacherController {
 //    @PostMapping("/create")
 //    public String create(Teacher teacher){}
 
-    @GetMapping("/list")
+    @GetMapping
     public String getAll(Model model){
         model.addAttribute("teachers", teacherService.findAll());
         return "teachers/list";
@@ -53,6 +54,7 @@ public class TeacherController {
         return "teachers/edit";
     }
 
+
     @PostMapping("{id}/edit")
     public String update(@PathVariable Long id, Teacher teacher){
         teacher.setId(id);
@@ -60,6 +62,11 @@ public class TeacherController {
         return "redirect:/teachers/list";
     }
 
+    @GetMapping(params = "language")
+    @ResponseBody
+    public List<TeacherDTO> findAllByLanguage(@RequestParam Language language){
+    return teacherService.findAllByLanguage(language);
+    }
     // Ściągawka z atrybutów Thymeleaf:
     //
     // ┌──────────┬────────────────────────┬───────────────────────────────────────────────────────────┐

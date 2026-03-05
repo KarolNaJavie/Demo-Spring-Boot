@@ -33,16 +33,15 @@ public class LessonService {
                 .orElseThrow(() -> new RuntimeException("Teacher not found: " + teacherId));
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found: " + studentId));
+
+        LocalDateTime from = lesson.getDatetime().minusHours(1);
+        LocalDateTime to = lesson.getDatetime().plusHours(1);
+
+        if(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(teacher, from, to)) {
+            throw new RuntimeException("Lekcja juz istnieje!");
+        }
         lesson.setTeacher(teacher);
         lesson.setStudent(student);
-        LocalDateTime beforeLesson = lesson.getDatetime().minusMinutes(30);
-        LocalDateTime afterLesson = lesson.getDatetime().plusMinutes(30);
-        if (lesson.getDatetime().isAfter(LocalDateTime.now().plusMinutes(30))
-                && !lessonRepository.existsByTeacherAndDatetimeBetween(teacher, beforeLesson, afterLesson)
-                && !lessonRepository.existsByStudentAndDatetimeBetween(student, beforeLesson, afterLesson)) {
-            lessonRepository.save(lesson);
-        } else {
-            throw new RuntimeException("Termin zajety lub nieprawidlowy");
-        }
+        lessonRepository.save(lesson);
     }
 }

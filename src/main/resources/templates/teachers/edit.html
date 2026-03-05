@@ -96,7 +96,7 @@
 
         <div class="form-group">
             <label for="language">Język programowania:</label>
-            <select id="language" name="language" required>
+            <select id="language" name="languages" multiple required>
                 <option th:each="lang : ${languages}"
                         th:value="${lang}"
                         th:text="${lang}"

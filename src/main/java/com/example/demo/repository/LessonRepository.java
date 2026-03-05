@@ -19,4 +19,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     boolean existsByTeacherAndDatetimeBetween(Teacher teacher, LocalDateTime localDateTime, LocalDateTime localDateTime1);
 
     boolean existsByStudentAndDatetimeBetween(Student student, LocalDateTime localDateTime, LocalDateTime localDateTime1);
+
+    boolean existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(Teacher teacher, LocalDateTime from, LocalDateTime to);
 }
