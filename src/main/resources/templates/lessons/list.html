@@ -81,9 +81,10 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>STUDENT</th>
-            <th>TEACHER</th>
-            <th>DATE</th>
+            <th>Student</th>
+            <th>Nauczyciel</th>
+            <th>Data</th>
+            <th>Akcje</th>
         </tr>
         </thead>
         <tbody>
@@ -92,6 +93,9 @@
             <td th:text="${lesson.student}"></td>
             <td th:text="${lesson.teacher}"></td>
             <td th:text="${lesson.datetime}"></td>
+            <td>
+                <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="delete-btn">Usuń</a>
+            </td>
         </tr>
         </tbody>
     </table>

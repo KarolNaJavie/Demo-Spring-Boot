@@ -40,8 +40,9 @@ public class LessonController {
         return "redirect:/lessons/list";
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    @GetMapping("/{id}")
+    public String delete(@PathVariable int id) {
         lessonService.deleteById(id);
+        return "redirect:/lessons/list";
     }
 }
