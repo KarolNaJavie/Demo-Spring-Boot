@@ -6,6 +6,7 @@ import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -33,4 +34,6 @@ public class StudentService {
     public Student findById (Long id){
         return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found: " + id ));
     }
+
+
 }

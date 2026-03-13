@@ -96,7 +96,8 @@
 
         <div class="form-group">
             <label for="teacherId">Nauczyciel:</label>
-            <select id="teacherId" name="teacherId" required>
+            <select id="teacherId" name="teacherId" required
+            onchange="populateStudents(this.id, "studentId")">
                 <option value="">-- Wybierz nauczyciela --</option>
                 <option th:each="teacher : ${teachers}"
                         th:value="${teacher.id}"
@@ -116,3 +117,18 @@
 </div>
 </body>
 </html>
+<script type="text/javascript">
+    function populateStudents(teacherSelectId, studentSelectId) {
+        const tSelect = document.getElementById(teacherSelectId);
+        const sSelect = document.getElementById(studentSelectId);
+        const url = `/students?teacher=${tSelect.value}`
+        $.getJSON(url, function (students) {
+            sSelect.innerHTML = '<option value="" disabled selected>select student</option>';
+            students.forEach(student => {
+                const option = `<option value="${student.id}">${student.name} ${student.surname}</option>`;
+                sSelect.innerHTML += option;
+            })
+        });
+    }
+
+</script>
