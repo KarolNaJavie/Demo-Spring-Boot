@@ -5,19 +5,20 @@ import com.example.demo.model.Student;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
-public class StudentDTO {
+@Builder
+public class StudentDto {
+
     private long id;
-    private String name;
-    private String surname;
+    private String firstName;
+    private String lastName;
     private Language language;
 
-    public static StudentDTO fromEntity(Student student) {
-        return StudentDTO.builder()
+    public static StudentDto fromEntity(Student student) {
+        return StudentDto.builder()
                 .id(student.getId())
-                .name(student.getName())
-                .surname(student.getSurname())
+                .firstName(student.getFirstName())
+                .lastName(student.getLastName())
                 .language(student.getLanguage())
                 .build();
     }

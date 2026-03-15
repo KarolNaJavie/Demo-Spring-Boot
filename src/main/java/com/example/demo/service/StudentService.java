@@ -4,36 +4,43 @@ import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
+
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
-    public List<Student> findAll(){
+    public List<Student> findAll() {
         return studentRepository.findAll();
     }
 
-    public void deleteById(long id) {
-        studentRepository.deleteById(id);
-    }
-
-    public void save(Student student, Long teacherId){
+    public void save(Student student, Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new RuntimeException("Teacher not found: " + teacherId));
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
+                        .format("Teacher with id={0} not found", teacherId)));
         student.setTeacher(teacher);
         studentRepository.save(student);
     }
 
-    public Student findById (Long id){
-        return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found: " + id ));
+    public void deleteById(Long id) {
+        studentRepository.deleteById(id);
     }
 
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
+                        .format("Student with id={0} not found", id)));
+    }
 
+    public List<Student> findAllByTeacher(Teacher teacher) {
+        return studentRepository.findAllByTeacher(teacher);
+    }
 }

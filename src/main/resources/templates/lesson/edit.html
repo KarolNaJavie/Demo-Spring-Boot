@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Management System</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark bg-dark mb-4"><div class="container"><span class="navbar-brand">Management System</span><div class="navbar-nav"><a class="nav-link" href="/students">Studenci</a><a class="nav-link" href="/teachers">Nauczyciele</a><a class="nav-link" href="/lessons">Lekcje</a></div></div></nav>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <h1 class="text-center">Change Lesson Date</h1>
+            <div class="card-body">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th> Current Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${lesson.getDatetime}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <form th:action="@{'/lessons/' + ${lesson.id} + '/update'}" method="POST">
+                    <input type="hidden" name="lessonId" th:value="${lesson.id}"/>
+                    <div class="form-group">
+                        <label>New Date</label>
+                        <input type="datetime-local" name="newDate" class="form-control"
+                               placeholder="Enter New Date"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="teacherId" th:value="${lesson.teacher.id}"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="studentId" th:value="${lesson.student.id}"/>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

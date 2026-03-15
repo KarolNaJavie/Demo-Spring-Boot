@@ -7,19 +7,21 @@ import lombok.Getter;
 
 import java.util.Set;
 
-@Builder
 @Getter
-public class TeacherDTO {
-    private  long id;
-    private String name;
-    private String surname;
+@Builder
+public class TeacherDto {
+
+    private long id;
+    private String firstName;
+    private String lastName;
     private Set<Language> languages;
 
-    public static TeacherDTO fromEntity(Teacher teacher){
-    return TeacherDTO.builder()
-            .id(teacher.getId())
-            .name(teacher.getName())
-            .surname(teacher.getSurname())
-            .languages(teacher.getLanguages())
-            .build();
-    }}
+    public static TeacherDto fromEntity(Teacher teacher) {
+        return TeacherDto.builder()
+                .id(teacher.getId())
+                .firstName(teacher.getFirstName())
+                .lastName(teacher.getLastName())
+                .languages(teacher.getLanguages())
+                .build();
+    }
+}

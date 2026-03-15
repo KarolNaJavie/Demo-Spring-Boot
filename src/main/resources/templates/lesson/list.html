@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Management System</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark bg-dark mb-4"><div class="container"><span class="navbar-brand">Management System</span><div class="navbar-nav"><a class="nav-link" href="/students">Studenci</a><a class="nav-link" href="/teachers">Nauczyciele</a><a class="nav-link" href="/lessons">Lekcje</a></div></div></nav>
+<div class="container">
+    <div class="row">
+        <h1> Lessons list </h1>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <a th:href="@{/lessons/create}" class="btn btn-primary btn-sm mb-3"> Add</a>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th> ID</th>
+            <th> Student</th>
+            <th> Teacher</th>
+            <th> Datetime</th>
+            <th> Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="lesson : ${lessons}">
+            <td th:text="${lesson.id}"></td>
+            <td th:text="${lesson.student}"></td>
+            <td th:text="${lesson.teacher}"></td>
+            <td th:text="${lesson.datetime}"></td>
+            <td>
+                <a th:href="@{/lessons/{id}/update(id=${lesson.id})}" class="btn btn-primary">Change Date</a>
+                <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
