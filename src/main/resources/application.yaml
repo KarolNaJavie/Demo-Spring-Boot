@@ -8,3 +8,5 @@ spring:
     name: Projekt X
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: update
