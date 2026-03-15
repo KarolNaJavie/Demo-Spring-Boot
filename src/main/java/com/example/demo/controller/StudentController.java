@@ -50,6 +50,30 @@ public class StudentController {
         return "redirect:/students";
     }
 
+    @GetMapping("/{id}/edit")
+    public String getEditView(@PathVariable Long id, Model model) {
+        Student student = studentService.findById(id);
+        model.addAttribute("student", student);
+        // Ladujemy tylko nauczycieli uczacych jezyka danego studenta
+        // (filtrowani w TeacherRepository.findAllByLanguagesContaining)
+        model.addAttribute("teachers", teacherService.findAllByLanguage(student.getLanguage()));
+        return "student/edit";
+    }
+
+    /*
+     * Ten endpoint jest wywolywany przez AJAX z formularza edycji studenta.
+     * JavaScript wysyla: POST /students/{studentId}/changeTeacher/{teacherId}
+     *
+     * @ResponseBody void - nie zwracamy widoku ani przekierowania.
+     * Spring odpowiada kodem HTTP 200 (OK) z pustym body.
+     * JavaScript w szablonie sam wykonuje redirect po otrzymaniu odpowiedzi 200.
+     */
+    @PostMapping("/{studentId}/changeTeacher/{teacherId}")
+    @ResponseBody
+    public void changeTeacher(@PathVariable long studentId, @PathVariable long teacherId) {
+        studentService.updateTeacher(studentId, teacherId);
+    }
+
     /*
      * Ten endpoint jest wywolywany przez AJAX z formularza tworzenia lekcji.
      * Gdy uzytkownik wybierze nauczyciela, JavaScript wysyla:
