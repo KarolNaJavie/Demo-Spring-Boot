@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Language;
 import com.example.demo.model.Teacher;
-import com.example.demo.model.dto.TeacherDto;
+import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -61,9 +61,9 @@ public class TeacherController {
      */
     @GetMapping(params = "language")
     @ResponseBody
-    public List<TeacherDto> findAllByLanguage(@RequestParam Language language) {
+    public List<TeacherDTO> findAllByLanguage(@RequestParam Language language) {
         return teacherService.findAllByLanguage(language).stream()
-                .map(TeacherDto::fromEntity)
+                .map(TeacherDTO::fromEntity)
                 .toList();
     }
 }

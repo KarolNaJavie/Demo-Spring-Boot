@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.model.LanguageMismatchException;
 import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.StudentRepository;
@@ -8,7 +7,6 @@ import com.example.demo.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -45,19 +43,5 @@ public class StudentService {
     public List<Student> findAllByTeacher(Teacher teacher) {
         return studentRepository.findAllByTeacher(teacher);
     }
-
-    @Transactional
-    public void updateTeacher(long studentId, long teacherId) {
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
-                        .format("Student with id={0} not found", studentId)));
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
-                        .format("Teacher with id={0} not found", teacherId)));
-        if (!teacher.getLanguages().contains(student.getLanguage())) {
-            throw new LanguageMismatchException();
-        }
-        student.setTeacher(teacher);
-        studentRepository.save(student);
-    }
 }
+

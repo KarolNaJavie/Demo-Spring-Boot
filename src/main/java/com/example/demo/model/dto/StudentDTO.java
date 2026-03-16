@@ -7,15 +7,15 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class StudentDto {
+public class StudentDTO {
 
     private long id;
     private String firstName;
     private String lastName;
     private Language language;
 
-    public static StudentDto fromEntity(Student student) {
-        return StudentDto.builder()
+    public static StudentDTO fromEntity(Student student) {
+        return StudentDTO.builder()
                 .id(student.getId())
                 .firstName(student.getFirstName())
                 .lastName(student.getLastName())

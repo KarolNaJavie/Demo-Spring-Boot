@@ -3,9 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.model.Language;
 import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
-import com.example.demo.model.dto.StudentDto;
+import com.example.demo.model.dto.StudentDTO;
 import com.example.demo.service.StudentService;
-import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,6 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-    private final TeacherService teacherService;
 
     @GetMapping
     public String getAll(Model model) {
@@ -50,30 +48,6 @@ public class StudentController {
         return "redirect:/students";
     }
 
-    @GetMapping("/{id}/edit")
-    public String getEditView(@PathVariable Long id, Model model) {
-        Student student = studentService.findById(id);
-        model.addAttribute("student", student);
-        // Ladujemy tylko nauczycieli uczacych jezyka danego studenta
-        // (filtrowani w TeacherRepository.findAllByLanguagesContaining)
-        model.addAttribute("teachers", teacherService.findAllByLanguage(student.getLanguage()));
-        return "student/edit";
-    }
-
-    /*
-     * Ten endpoint jest wywolywany przez AJAX z formularza edycji studenta.
-     * JavaScript wysyla: POST /students/{studentId}/changeTeacher/{teacherId}
-     *
-     * @ResponseBody void - nie zwracamy widoku ani przekierowania.
-     * Spring odpowiada kodem HTTP 200 (OK) z pustym body.
-     * JavaScript w szablonie sam wykonuje redirect po otrzymaniu odpowiedzi 200.
-     */
-    @PostMapping("/{studentId}/changeTeacher/{teacherId}")
-    @ResponseBody
-    public void changeTeacher(@PathVariable long studentId, @PathVariable long teacherId) {
-        studentService.updateTeacher(studentId, teacherId);
-    }
-
     /*
      * Ten endpoint jest wywolywany przez AJAX z formularza tworzenia lekcji.
      * Gdy uzytkownik wybierze nauczyciela, JavaScript wysyla:
@@ -86,9 +60,9 @@ public class StudentController {
      */
     @GetMapping(params = "teacher")
     @ResponseBody
-    public List<StudentDto> findAllByTeacher(@RequestParam Teacher teacher) {
+    public List<StudentDTO> findAllByTeacher(@RequestParam Teacher teacher) {
         return studentService.findAllByTeacher(teacher).stream()
-                .map(StudentDto::fromEntity)
+                .map(StudentDTO::fromEntity)
                 .toList();
     }
 }

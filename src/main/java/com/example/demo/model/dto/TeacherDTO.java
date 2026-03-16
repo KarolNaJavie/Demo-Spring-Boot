@@ -9,15 +9,15 @@ import java.util.Set;
 
 @Getter
 @Builder
-public class TeacherDto {
+public class TeacherDTO {
 
     private long id;
     private String firstName;
     private String lastName;
     private Set<Language> languages;
 
-    public static TeacherDto fromEntity(Teacher teacher) {
-        return TeacherDto.builder()
+    public static TeacherDTO fromEntity(Teacher teacher) {
+        return TeacherDTO.builder()
                 .id(teacher.getId())
                 .firstName(teacher.getFirstName())
                 .lastName(teacher.getLastName())
