@@ -26,6 +26,10 @@ public class StudentService {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat
                         .format("Teacher with id={0} not found", teacherId)));
+        //walidacja jezyka
+        if(!teacher.getLanguages().contains(student.getLanguage())){
+            throw new RuntimeException("Language missmach ");
+        }
         student.setTeacher(teacher);
         studentRepository.save(student);
     }
@@ -42,6 +46,21 @@ public class StudentService {
 
     public List<Student> findAllByTeacher(Teacher teacher) {
         return studentRepository.findAllByTeacher(teacher);
+    }
+
+//    @Transactional //poczytac czym jest transakcja tu dodac ze jak jest z tym to nie musiym robic save
+    public void updateTeacher(long studentId, long teacherId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
+                        .format("Student with id={0} not found", studentId)));
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
+                        .format("Teacher with id={0} not found", teacherId)));
+        if (!teacher.getLanguages().contains(student.getLanguage())) {
+            throw new RuntimeException(); //tu specjalne exce
+        }
+        student.setTeacher(teacher);
+        studentRepository.save(student);
     }
 }
 
