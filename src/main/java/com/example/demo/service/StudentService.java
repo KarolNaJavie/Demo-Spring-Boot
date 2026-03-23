@@ -43,5 +43,7 @@ public class StudentService {
     public List<Student> findAllByTeacher(Teacher teacher) {
         return studentRepository.findAllByTeacher(teacher);
     }
+
+//    nastepna lekcja update teacher
 }
 

@@ -26,6 +26,7 @@ public class LessonService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
+//    tested
     public List<Lesson> findAll() {
         return lessonRepository.findAll();
     }
@@ -49,8 +50,9 @@ public class LessonService {
         lesson.setTeacher(teacher);
         lessonRepository.save(lesson);
     }
-
-    @Transactional
+//todo
+//    @Transactional
+//    odkomentowac jak wytlumaczymy sobie na save
     public void changeDate(long lessonId, LocalDateTime dateTime) {
         if (dateTime.isBefore(LocalDateTime.now())) {
             throw new LessonCannotBeInThePastException();
@@ -58,7 +60,8 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat
                         .format("Lesson with id={0} not found", lessonId)));
-        lesson.setDatetime(dateTime.plusYears(10));
+
+//        lesson.setDatetime(dateTime.plusYears(10)); //todo wrocic do tego
         Teacher teacher = lesson.getTeacher();
         LocalDateTime from = dateTime.minusHours(1);
         LocalDateTime to = dateTime.plusHours(1);
@@ -66,8 +69,9 @@ public class LessonService {
             throw new TermUnavailableException();
         }
         lesson.setDatetime(dateTime);
+        lessonRepository.save(lesson); //docelowo niepotrzbne przy transactional
     }
-
+//???
     public void deleteById(long lessonId) {
         Lesson lesson = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat
@@ -77,7 +81,7 @@ public class LessonService {
         }
         lessonRepository.deleteById(lessonId);
     }
-
+//tested
     public Lesson findById(long id) {
         return lessonRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat

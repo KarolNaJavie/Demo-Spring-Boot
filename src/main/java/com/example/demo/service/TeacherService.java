@@ -15,7 +15,7 @@ import java.util.List;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
-
+// tested happy path
     public List<Teacher> findAll() {
         return teacherRepository.findAll();
     }
@@ -29,6 +29,11 @@ public class TeacherService {
     }
 
     public Teacher findById(Long id) {
+
+
+
+
+
         return teacherRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MessageFormat
                         .format("Teacher with id={0} not found", id)));
