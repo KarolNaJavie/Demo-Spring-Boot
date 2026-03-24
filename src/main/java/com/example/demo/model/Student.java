@@ -1,62 +1,47 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private Long id;
 
-    String name;
-    String surname;
+    private String firstName;
+    private String lastName;
 
-
-    // -------------------------------------------------------------------------
-    // @Enumerated(EnumType.STRING)
-    //   Mówi Hibernate żeby zapisywał nazwę enuma (np. "JAVA") zamiast liczby (0).
-    //   Domyślnie JPA zapisuje ORDINAL (0, 1, 2...) — to jest pułapka, bo gdy
-    //   zmienisz kolejność wartości w enumie, stare rekordy w bazie zmienią sens.
-    //   Zawsze używaj EnumType.STRING — kod jest czytelniejszy i bezpieczniejszy.
-    // -------------------------------------------------------------------------
     @Enumerated(EnumType.STRING)
     private Language language;
-
-    // -------------------------------------------------------------------------
-    // @ManyToOne – wielu studentów należy do jednego nauczyciela
-    //
-    //   To jest strona WŁAŚCICIEL (owning side) relacji — tu Hibernate patrzy,
-    //   żeby wiedzieć co zapisać do bazy danych.
-    //
-    // @JoinColumn(name = "teacher_id")
-    //   Mówi JPA jak ma się nazywać kolumna klucza obcego w tabeli "student".
-    //   Bez tej adnotacji Hibernate sam wygeneruje nazwę (zwykle "teacher_id"),
-    //   ale dobrą praktyką jest nazwać ją jawnie — kod jest wtedy czytelniejszy.
-    //
-    //   DLACZEGO @JoinColumn jest tutaj, a nie w Teacher?
-    //   Bo klucz obcy fizycznie siedzi w tabeli STUDENT (po stronie "wiele").
-    //   Teacher nie ma żadnej dodatkowej kolumny — on tylko "patrzy" na studentów
-    //   przez mappedBy.
-    // -------------------------------------------------------------------------
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
 
     @OneToMany(mappedBy = "student")
     private Set<Lesson> lessons;
 
+    @ManyToOne
+    private Teacher teacher;
+
     @Override
     public String toString() {
-        return name + " " + surname;
+        return firstName + " " + lastName;
     }
 }

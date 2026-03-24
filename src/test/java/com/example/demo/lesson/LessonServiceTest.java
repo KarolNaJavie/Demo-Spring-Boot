@@ -1,10 +1,12 @@
 package com.example.demo.lesson;
 
 import com.example.demo.model.Lesson;
+import com.example.demo.model.Teacher;
 import com.example.demo.repository.LessonRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.LessonService;
+import jakarta.persistence.EntityNotFoundException;
 import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +16,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static tools.jackson.databind.type.LogicalType.DateTime;
 
 @ExtendWith(MockitoExtension.class)
 class LessonServiceTest {
@@ -53,7 +60,63 @@ class LessonServiceTest {
         assertEquals(saved, lessons);
 
         //napisac analogiczny test dla teachera findall, teacher findAllByLanguage, save(lesson i teacher)-- potrzeba ArgumentCaptor
-       // --        verify(teacherRepository).save(teacherArgumentCaptor.capture());
-       // teacherArgumentCaptor.getValue();
+        // --        verify(teacherRepository).save(teacherArgumentCaptor.capture());
+        // teacherArgumentCaptor.getValue();
+
+
     }
+
+    @Test
+    void testChangeDate_HappyPath_ResultrsInLessonWithChangedDate() {
+        //Given
+        long lessonId = 1L;
+
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(2); //nowy termin w przyszlosci
+        LocalDateTime oneHouerInTheFuture = newDateTime.plusHours(1);
+        LocalDateTime oneHouerInThePast = newDateTime.minusHours(1);
+
+        //Stary termin lekcji musi byc tez w przyszlosci  ( bo lekcja nie moze byc juz rozpoczeta)
+
+        Lesson lesson = Lesson.builder()
+                .datetime(LocalDateTime.now().plusHours(1))
+                .teacher(new Teacher())
+                .id(lessonId)
+                .build();
+
+        when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+        //nowy termin wolny (nie ma kolizji)
+        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(lesson.getTeacher()
+                , oneHouerInThePast, oneHouerInTheFuture)).thenReturn(false);
+
+        lessonService.changeDate(lessonId, newDateTime);
+
+
+    }
+
+    @Test
+    void testFindById_LessonNotFound_ResultInEntityNotFoundException() {
+        long lessonId = 1;
+        String message = MessageFormat.format("Lesson with id={0} not found", lessonId);
+
+        when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> lessonService.findById(lessonId))
+                .withMessage(message);
+
+        verify(lessonRepository).findById(lessonId);
+        verifyNoMoreInteractions(lessonRepository);
+    }
+
+    @Test
+    void testDeleteById_HappyPath_ResultIn(){
+        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1)).build();
+        Long lessonId = 1L;
+        when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+        lessonService.deleteById(1L);
+        verify(lessonRepository).deleteById(lessonId);
+
+    }
+    //dokonczyc testy
+
 }

@@ -1,48 +1,63 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Lesson;
-import com.example.demo.repository.StudentRepository;
-import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.LessonService;
+import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/lessons")
 public class LessonController {
-    private final LessonService lessonService;
-    private final TeacherRepository teacherRepository;
-    private final StudentRepository studentRepository;
 
-    @GetMapping("/list")
+    private final LessonService lessonService;
+    private final TeacherService teacherService;
+
+    @GetMapping
     public String getAll(Model model) {
         model.addAttribute("lessons", lessonService.findAll());
-        List<Lesson> lessons = lessonService.findAll(); // pobiera wszystkie lekcje z DB
-        System.out.println("Liczba lekcji: " + lessons.size());
-        return "lessons/list";
+        return "lesson/list";
     }
 
     @GetMapping("/create")
-    public String createFrom(Model model) {
-    model.addAttribute("teachers", teacherRepository.findAll());
-    model.addAttribute("students", studentRepository.findAll());
-    return "lessons/register";
+    public String createNew(Model model) {
+        model.addAttribute("teachers", teacherService.findAll());
+        return "lesson/create";
     }
 
     @PostMapping("/create")
-    public String save (Lesson lesson, Long teacherId, Long studentId){
-        lessonService.save(lesson, teacherId, studentId);
-        return "redirect:/lessons/list";
+    public String save(Lesson lesson, @RequestParam long studentId, @RequestParam long teacherId) {
+        lessonService.save(lesson, studentId, teacherId);
+        return "redirect:/lessons";
     }
 
     @GetMapping("/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable Long id) {
         lessonService.deleteById(id);
-        return "redirect:/lessons/list";
+        return "redirect:/lessons";
+    }
+
+    @GetMapping("/{id}/update")
+    public String viewUpdateLesson(@PathVariable Long id, Model model) {
+        Lesson existingLesson = lessonService.findById(id);
+        model.addAttribute("lesson", existingLesson);
+        return "lesson/edit";
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateLesson(@RequestParam Long lessonId,
+                               @RequestParam @DateTimeFormat LocalDateTime newDate) {
+        lessonService.changeDate(lessonId, newDate);
+        return "redirect:/lessons";
     }
 }

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Management System</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!--
+        AJAX wymaga biblioteki JavaScript do wysylania zapytan HTTP.
+        Uzywamy jQuery - popularnej biblioteki JS, ktora upraszcza skladnie.
+        Bez tej linii funkcja $.getJSON() nizej nie zadzialaby.
+    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark bg-dark mb-4"><div class="container"><span class="navbar-brand">Management System</span><div class="navbar-nav"><a class="nav-link" href="/students">Studenci</a><a class="nav-link" href="/teachers">Nauczyciele</a><a class="nav-link" href="/lessons">Lekcje</a></div></div></nav>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <h1 class="text-center"> Create New Student </h1>
+            <div class="card-body">
+                <form action="/students/create" method="POST">
+                    <div class="form-group">
+                        <label> First Name </label>
+                        <input type="text" name="firstName" class="form-control"
+                               placeholder="Enter First Name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label> Last Name </label>
+                        <input type="text" name="lastName" class="form-control"
+                               placeholder="Enter Last Name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label> Language </label><br/>
+                        <!--
+                            onchange="populateTeachers(...)" - gdy uzytkownik zmieni wybrany jezyk,
+                            przegladarka wywola funkcje JavaScript populateTeachers().
+                            Przekazujemy jej id tego selecta oraz id selecta z nauczycielami,
+                            zeby funkcja wiedziala ktore elementy HTML ma zaktualizowac.
+                        -->
+                        <select id="langSelectId" name="language" required
+                                onchange="populateTeachers(this.id, 'teacherSelectId')">
+                            <option value="" disabled selected>select language</option>
+                            <option th:each="language : ${languages}" th:text="${language}"
+                                    th:value="${language}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label> Teacher </label><br/>
+                        <!--
+                            Ten select jest poczatkowo pusty.
+                            Opcje beda wstrzykiwane dynamicznie przez funkcje populateTeachers()
+                            po tym jak uzytkownik wybierze jezyk powyzej.
+                        -->
+                        <select id="teacherSelectId" name="teacherId" required>
+                            <option value="" disabled selected>select teacher</option>
+                        </select>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+    /*
+     * AJAX - Asynchronous JavaScript And XML
+     *
+     * Normalnie kazde klikniecie w formularzu wysyla request i strona sie przeladowuje.
+     * AJAX pozwala wyslac request HTTP do serwera W TLE - bez przeladowania strony.
+     * Serwer odpowiada danymi (tu: JSON), a my aktualizujemy tylko fragment HTML.
+     *
+     * Przyklad co sie dzieje gdy uzytkownik wybierze "JAVA":
+     *   1. Przegladarka wywoluje populateTeachers()
+     *   2. Funkcja wysyla GET /teachers?language=JAVA do naszego serwera
+     *   3. TeacherController.findAllByLanguage() zwraca List<TeacherDto> jako JSON
+     *   4. Funkcja odbiera JSON i wstawia opcje do dropdowna nauczycieli
+     *   - caly czas jestesmy na tej samej stronie, nic sie nie przeladuje
+     */
+    function populateTeachers(lSelectId, tSelectId) {
+        // Pobieramy referencje do obu elementow HTML <select> po ich id
+        let lSelect = document.getElementById(lSelectId);
+        let tSelect = document.getElementById(tSelectId);
+
+        // Budujemy URL do naszego endpointu w TeacherController
+        // np. jezeli wybrano JAVA, url = "/teachers?language=JAVA"
+        let url = "/teachers?language=" + lSelect.value;
+
+        // $.getJSON() - funkcja jQuery wysylajaca asynchroniczny GET request
+        // Gdy serwer odpowie, zostanie wywolana funkcja zwrotna (callback) z parametrem "teachers"
+        // "teachers" to tablica obiektow JSON np. [{id:1, firstName:"Jan", lastName:"Kowalski"}, ...]
+        $.getJSON(url, function(teachers) {
+
+            // Resetujemy zawartosc dropdowna - usuwamy stare opcje
+            tSelect.innerHTML = '<option value="" disabled selected>select teacher</option>';
+
+            // Iterujemy po kazdym nauczycielu zwroconym przez serwer
+            teachers.forEach(teacher => {
+                // Tworzymy HTML dla jednej opcji - value to id nauczyciela (pojdzie jako teacherId do kontrolera)
+                // tekst to imie i nazwisko widoczne dla uzytkownika
+                let option = '<option value="' + teacher.id + '">' + teacher.firstName + ' ' + teacher.lastName + '</option>';
+
+                // Dopisujemy opcje do dropdowna
+                tSelect.innerHTML += option;
+            })
+        })
+    }
+</script>

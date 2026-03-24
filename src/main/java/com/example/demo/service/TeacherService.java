@@ -2,11 +2,12 @@ package com.example.demo.service;
 
 import com.example.demo.model.Language;
 import com.example.demo.model.Teacher;
-import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @Service
@@ -14,25 +15,31 @@ import java.util.List;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
-
+// tested happy path
     public List<Teacher> findAll() {
         return teacherRepository.findAll();
     }
 
-    public void deleteById(long id) {
+    public void save(Teacher teacher) {
+        teacherRepository.save(teacher);
+    }
+
+    public void deleteById(Long id) {
         teacherRepository.deleteById(id);
     }
 
-    public void save(Teacher teacher1) {
-        teacherRepository.save(teacher1);
-    }
-
     public Teacher findById(Long id) {
-        return teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found: " + id));
+
+
+
+
+
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
+                        .format("Teacher with id={0} not found", id)));
     }
 
-    public List<TeacherDTO> findAllByLanguage(Language language) {
-        List<Teacher> teachers = teacherRepository.findAllByLanguagesContaining(language);
-        return teachers.stream().map(TeacherDTO::fromEntity).toList();
+    public List<Teacher> findAllByLanguage(Language language) {
+        return teacherRepository.findAllByLanguagesContaining(language);
     }
 }
