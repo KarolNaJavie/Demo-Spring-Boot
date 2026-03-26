@@ -123,5 +123,4 @@ public class StudentServiceTest {
         verifyNoMoreInteractions(teacherRepository);
         verifyNoInteractions(studentRepository);
     }
-
 }

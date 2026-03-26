@@ -15,7 +15,7 @@ import java.util.List;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
-// tested happy path
+
     public List<Teacher> findAll() {
         return teacherRepository.findAll();
     }
