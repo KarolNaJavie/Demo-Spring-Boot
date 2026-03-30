@@ -55,8 +55,7 @@ public class LessonController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateLesson(@RequestParam Long lessonId,
-                               @RequestParam @DateTimeFormat LocalDateTime newDate) {
+    public String updateLesson(@RequestParam Long lessonId, @RequestParam @DateTimeFormat LocalDateTime newDate) {
         lessonService.changeDate(lessonId, newDate);
         return "redirect:/lessons";
     }

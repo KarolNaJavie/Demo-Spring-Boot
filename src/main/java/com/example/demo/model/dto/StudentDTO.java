@@ -1,6 +1,6 @@
 package com.example.demo.model.dto;
 
-import com.example.demo.model.Language;
+import com.example.demo.model.common.Language;
 import com.example.demo.model.Student;
 import lombok.Builder;
 import lombok.Getter;

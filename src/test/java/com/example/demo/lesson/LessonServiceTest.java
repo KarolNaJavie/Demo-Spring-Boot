@@ -1,14 +1,15 @@
 package com.example.demo.lesson;
 
-import com.example.demo.model.Lesson;
-import com.example.demo.model.Student;
-import com.example.demo.model.Teacher;
+import com.example.demo.model.*;
+import com.example.demo.model.common.Language;
+import com.example.demo.model.common.exception.LanguageMismatch;
+import com.example.demo.model.common.exception.LessonCannotBeInThePastException;
+import com.example.demo.model.common.exception.TermUnavailableException;
 import com.example.demo.repository.LessonRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.LessonService;
 import jakarta.persistence.EntityNotFoundException;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,15 +19,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static tools.jackson.databind.type.LogicalType.DateTime;
 
 @ExtendWith(MockitoExtension.class)
 class LessonServiceTest {
@@ -78,20 +78,29 @@ class LessonServiceTest {
 
         //Stary termin lekcji musi byc tez w przyszlosci  ( bo lekcja nie moze byc juz rozpoczeta)
 
-        Lesson lesson = Lesson.builder()
-                .datetime(LocalDateTime.now().plusHours(1))
-                .teacher(new Teacher())
-                .id(lessonId)
-                .build();
+        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1)).teacher(new Teacher()).id(lessonId).build();
 
         when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
         //nowy termin wolny (nie ma kolizji)
-        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(lesson.getTeacher()
-                , oneHouerInThePast, oneHouerInTheFuture)).thenReturn(false);
+        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(lesson.getTeacher(), oneHouerInThePast, oneHouerInTheFuture)).thenReturn(false);
 
         lessonService.changeDate(lessonId, newDateTime);
+    }
 
+    @Test
+    void testChangeDate_TermUnavailable_ResultsInTermUnavailableException() {
+        long lessonId = 1L;
 
+        LocalDateTime newDateTime = LocalDateTime.now().plusHours(2);
+        LocalDateTime oneHouerInTheFuture = newDateTime.plusHours(1);
+        LocalDateTime oneHouerInThePast = newDateTime.minusHours(1);
+
+        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1)).teacher(new Teacher()).id(lessonId).build();
+
+        when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(lesson.getTeacher(), oneHouerInThePast, oneHouerInTheFuture)).thenReturn(true);
+        assertThatExceptionOfType(TermUnavailableException.class).isThrownBy(() -> lessonService.changeDate(1L, newDateTime)).withMessage("This date is not available");
+        verify(lessonRepository, never()).save(any());
     }
 
     @Test
@@ -101,9 +110,7 @@ class LessonServiceTest {
 
         when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> lessonService.findById(lessonId))
-                .withMessage(message);
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> lessonService.findById(lessonId)).withMessage(message);
 
         verify(lessonRepository).findById(lessonId);
         verifyNoMoreInteractions(lessonRepository);
@@ -123,12 +130,10 @@ class LessonServiceTest {
     // do sprawdzenia
     @Test
     void testDeleteById_LessonNotFound_EntityNotFoundException() {
-        String msg = MessageFormat.format("Lesson with id={0} not found", 1L);
+        String exceptionMsg = MessageFormat.format("Lesson with id={0} not found", 1L);
         when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> lessonService.deleteById(1L))
-                .withMessage(msg);
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> lessonService.deleteById(1L)).withMessage(exceptionMsg);
         verify(lessonRepository).findById(1L);
         verifyNoMoreInteractions(lessonRepository);
     }
@@ -139,24 +144,35 @@ class LessonServiceTest {
         Student student = Student.builder().id(1L).build();
         Lesson lesson = Lesson.builder().teacher(teacher).student(student).datetime(LocalDateTime.now().plusHours(1)).build();
 
-
         when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
         when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
         lessonService.save(lesson, 1L, 1L);
-        verify(lessonRepository).save(lesson);
-        assertEquals(teacher, lesson.getTeacher());
-        assertEquals(student, lesson.getStudent());
+        verify(lessonRepository).save(lessonArgumentCaptor.capture());
+        Lesson result = lessonArgumentCaptor.getValue();
+        assertEquals(teacher, result.getTeacher());
+        assertEquals(student, result.getStudent());
+    }
+
+    @Test
+    void testSave_LanguageMismatch_ResultsInException() {
+        Teacher teacher = Teacher.builder().languages(Set.of(Language.C)).id(1L).build();
+        Student student = Student.builder().language(Language.JAVA).id(1L).build();
+        Lesson lesson = Lesson.builder().teacher(teacher).student(student).datetime(LocalDateTime.now().plusHours(1)).build();
+
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
+
+        assertThatExceptionOfType(LanguageMismatch.class).isThrownBy(() -> lessonService.save(lesson, 1L, 1L)).withMessage("Languages of teacher and student dont match!");
+        verify(lessonRepository, never()).save(any());
     }
 
     @Test
     void testSave_StudentNotFound_EntityNotFoundException() {
         Lesson lesson = Lesson.builder().build();
-        String msg = MessageFormat.format("Student with id={0} not found", 1L);
+        String exceptionMsg = MessageFormat.format("Student with id={0} not found", 1L);
         when(studentRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> lessonService.save(lesson, 1L, 1L))
-                .withMessage(msg);
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> lessonService.save(lesson, 1L, 1L)).withMessage(exceptionMsg);
         verify(studentRepository).findById(1L);
         verifyNoMoreInteractions(studentRepository);
         verifyNoInteractions(lessonRepository);
@@ -166,15 +182,39 @@ class LessonServiceTest {
     void testSave_TeacherNotFound_EntityNotFoundException() {
         Lesson lesson = Lesson.builder().build();
         Student student = Student.builder().build();
-        String msg = MessageFormat.format("Teacher with id={0} not found", 1L);
+        String exceptionMsg = MessageFormat.format("Teacher with id={0} not found", 1L);
         when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
         when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> lessonService.save(lesson, 1L, 1L))
-                .withMessage(msg);
+        assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(() -> lessonService.save(lesson, 1L, 1L)).withMessage(exceptionMsg);
         verify(teacherRepository).findById(1L);
         verifyNoMoreInteractions(teacherRepository);
         verifyNoInteractions(lessonRepository);
     }
 
+    @Test
+    void testSave_DateInThePast_ResultsInLessonCannotBeInThePastException() {
+        Student student = Student.builder().id(1L).build();
+        Teacher teacher = Teacher.builder().id(1L).build();
+        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().minusHours(1)).build();
+        String exceptionMsg = "Lesson cannot be in the past";
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        assertThatExceptionOfType(LessonCannotBeInThePastException.class).isThrownBy(() -> lessonService.save(lesson, student.getId(), teacher.getId())).withMessage(exceptionMsg);
+        verifyNoInteractions(lessonRepository);
+    }
+
+    @Test
+    void testSave_TermUnavailableException() {
+        Student student = Student.builder().id(1L).build();
+        Teacher teacher = Teacher.builder().id(1L).build();
+        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1)).build();
+        String exceptionMsg = "This date is not available";
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(any(), any(), any())).thenReturn(true);
+        assertThatExceptionOfType(TermUnavailableException.class).isThrownBy(() -> lessonService.save(lesson, 1L, 1L)).withMessage(exceptionMsg);
+        //             czy nigdy nie bylo uzyte save, repository jest uzywane do existby...
+        verify(lessonRepository, never()).save(any());
+    }
+//    change date
 }

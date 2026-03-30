@@ -57,16 +57,15 @@ public class StudentServiceTest {
     @Test
     void testFindById_StudentNotFound_ResultInEntityNotFoundException() {
         long studentId = 1;
-        String msg = MessageFormat.format("Student with id={0} not found", studentId);
+        String exceptionMsg = MessageFormat.format("Student with id={0} not found", studentId);
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> studentService.findById(studentId)).withMessage(msg);
+                .isThrownBy(() -> studentService.findById(studentId)).withMessage(exceptionMsg);
         verify(studentRepository).findById(studentId);
         verifyNoMoreInteractions(studentRepository);
     }
 
-    //    Help plox
     @Test
     void testFindAllByTeacher_HappyPath_ResultsInAllStudentsByTeacherBeingFound() {
         Teacher teacher = Teacher.builder().build();
@@ -99,7 +98,7 @@ public class StudentServiceTest {
     }
 
     @Test
-    void  testSave_HappyPath_ResultsInStudentBeingSavedWithTeacher() {
+    void testSave_HappyPath_ResultsInStudentBeingSavedWithTeacher() {
         Teacher teacher = Teacher.builder().id(1L).build();
         Student student = Student.builder().firstName("Johny").lastName("Bravo").id(1L).build();
 
@@ -111,14 +110,14 @@ public class StudentServiceTest {
     }
 
     @Test
-    void testSave_TeacherNotFound_ResultInEntityNotFoundException(){
-       Student student = Student.builder().build();
-        String msg = MessageFormat.format("Teacher with id={0} not found", 1L);
+    void testSave_TeacherNotFound_ResultInEntityNotFoundException() {
+        Student student = Student.builder().build();
+        String exceptionMsg = MessageFormat.format("Teacher with id={0} not found", 1L);
         when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(()->studentService.save(student, 1L))
-                .withMessage(msg);
+                .isThrownBy(() -> studentService.save(student, 1L))
+                .withMessage(exceptionMsg);
         verify(teacherRepository).findById(1L);
         verifyNoMoreInteractions(teacherRepository);
         verifyNoInteractions(studentRepository);

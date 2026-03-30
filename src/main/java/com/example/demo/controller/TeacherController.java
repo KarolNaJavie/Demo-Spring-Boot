@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Language;
+import com.example.demo.model.common.Language;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.service.TeacherService;

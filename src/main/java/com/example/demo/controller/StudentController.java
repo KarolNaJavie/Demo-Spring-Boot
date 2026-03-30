@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Language;
+import com.example.demo.model.common.Language;
 import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.dto.StudentDTO;
@@ -61,8 +61,6 @@ public class StudentController {
     @GetMapping(params = "teacher")
     @ResponseBody
     public List<StudentDTO> findAllByTeacher(@RequestParam Teacher teacher) {
-        return studentService.findAllByTeacher(teacher).stream()
-                .map(StudentDTO::fromEntity)
-                .toList();
+        return studentService.findAllByTeacher(teacher).stream().map(StudentDTO::fromEntity).toList();
     }
 }
