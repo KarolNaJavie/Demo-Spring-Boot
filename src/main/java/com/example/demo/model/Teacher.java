@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.model.common.Language;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

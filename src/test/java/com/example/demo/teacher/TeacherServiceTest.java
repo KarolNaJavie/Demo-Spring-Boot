@@ -1,6 +1,6 @@
 package com.example.demo.teacher;
 
-import com.example.demo.model.Language;
+import com.example.demo.model.common.Language;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
@@ -13,7 +13,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -41,7 +40,6 @@ public class TeacherServiceTest {
     @Captor
     private ArgumentCaptor<Language> teacherLanguageCaptor;
 
-
     @Test
     void testFindAll_HappyPath_ResultsInAllTeachersBeingFound() {
         Teacher teacher1 = Teacher.builder().build();
@@ -58,7 +56,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    void testFindAll_HappyPath_ResultsInAllTeachersByLanguageBeingFound() {
+    void testFindAllByLanguage_HappyPath_ResultsInAllTeachersByLanguageBeingFound() {
         Language c = Language.C;
         Teacher teacher1 = Teacher.builder().languages(Set.of(c)).build();
 
@@ -80,7 +78,6 @@ public class TeacherServiceTest {
 
         when(teacherRepository.findById(teacherId)).thenReturn(Optional.empty());
 
-
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> teacherService.findById(teacherId))
                 .withMessage(exceptionMsg);
@@ -92,6 +89,4 @@ public class TeacherServiceTest {
         verify(teacherRepository).findById(teacherId);
         verifyNoMoreInteractions(teacherRepository);// sorawdza czy serwis nie wchodzil juz w interakcje po rzuceniu wyjatku
     }
-
-
 }

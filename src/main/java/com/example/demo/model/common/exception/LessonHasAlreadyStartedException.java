@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.model.common.exception;
 
 public class LessonHasAlreadyStartedException extends RuntimeException {
     public LessonHasAlreadyStartedException() {

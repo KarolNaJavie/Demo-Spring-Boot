@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.model.common.Language;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
