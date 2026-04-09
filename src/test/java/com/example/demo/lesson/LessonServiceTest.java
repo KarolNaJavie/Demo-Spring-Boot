@@ -95,11 +95,15 @@ class LessonServiceTest {
         LocalDateTime oneHouerInTheFuture = newDateTime.plusHours(1);
         LocalDateTime oneHouerInThePast = newDateTime.minusHours(1);
 
-        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1)).teacher(new Teacher()).id(lessonId).build();
+        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1))
+                .teacher(new Teacher()).id(lessonId).build();
 
         when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
-        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(lesson.getTeacher(), oneHouerInThePast, oneHouerInTheFuture)).thenReturn(true);
-        assertThatExceptionOfType(TermUnavailableException.class).isThrownBy(() -> lessonService.changeDate(1L, newDateTime)).withMessage("This date is not available");
+        when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan
+                (lesson.getTeacher(), oneHouerInThePast, oneHouerInTheFuture)).thenReturn(true);
+        assertThatExceptionOfType(TermUnavailableException.class)
+                .isThrownBy(() -> lessonService.changeDate(1L, newDateTime))
+                .withMessage("This date is not available");
         verify(lessonRepository, never()).save(any());
     }
 
@@ -163,7 +167,9 @@ class LessonServiceTest {
         when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
         when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
-        assertThatExceptionOfType(LanguageMismatch.class).isThrownBy(() -> lessonService.save(lesson, 1L, 1L)).withMessage("Languages of teacher and student dont match!");
+        assertThatExceptionOfType(LanguageMismatch.class)
+                .isThrownBy(() -> lessonService.save(lesson, 1L, 1L))
+                .withMessage("Languages of teacher and student dont match!");
         verify(lessonRepository, never()).save(any());
     }
 

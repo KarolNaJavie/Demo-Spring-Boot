@@ -9,6 +9,7 @@ import com.example.demo.repository.LessonRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,24 +48,22 @@ public class LessonService {
         lessonRepository.save(lesson);
     }
 
-    //todo
-//    @Transactional
-//    odkomentowac jak wytlumaczymy sobie na save
+    @Transactional
     public void changeDate(long lessonId, LocalDateTime dateTime) {
         if (dateTime.isBefore(LocalDateTime.now())) {
             throw new LessonCannotBeInThePastException();
         }
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Lesson with id={0} not found", lessonId)));
-
-//        lesson.setDatetime(dateTime.plusYears(10)); //todo wrocic do tego
+        lessonRepository.deleteById(lessonId);
         Teacher teacher = lesson.getTeacher();
         LocalDateTime from = dateTime.minusHours(1);
         LocalDateTime to = dateTime.plusHours(1);
+
         if (lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(teacher, from, to)) {
             throw new TermUnavailableException();
         }
         lesson.setDatetime(dateTime);
-        lessonRepository.save(lesson); //docelowo niepotrzbne przy transactional
+//        lessonRepository.save(lesson); //docelowo niepotrzbne przy transactional
     }
 
     public void deleteById(long lessonId) {
