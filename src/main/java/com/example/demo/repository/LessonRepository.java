@@ -20,4 +20,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     Optional<Lesson> findWithLockById(Long id);
 
     boolean existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThanAndIdNot(Teacher teacher, LocalDateTime from, LocalDateTime to, long id);
+
+    boolean existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(Teacher teacher, LocalDateTime from, LocalDateTime to);
 }
