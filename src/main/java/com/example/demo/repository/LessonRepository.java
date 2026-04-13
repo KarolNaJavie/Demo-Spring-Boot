@@ -12,10 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
-    boolean existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(Teacher teacher, LocalDateTime from, LocalDateTime to);
-    @Lock(LockModeType.OPTIMISTIC) //Optimistic force increment wymusza zwiekszenie wersji, nawet kiedy nie ma zmian
+    @Lock(LockModeType.OPTIMISTIC)
+        //Optimistic force increment wymusza zwiekszenie wersji, nawet kiedy nie ma zmian
     Optional<Lesson> findWithOptimisticLockById(Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Lesson> findWithLockById(Long id);
+
+    boolean existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThanAndIdNot(Teacher teacher, LocalDateTime from, LocalDateTime to, long id);
 }

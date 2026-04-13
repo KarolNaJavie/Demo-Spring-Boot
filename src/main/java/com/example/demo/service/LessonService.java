@@ -55,12 +55,11 @@ public class LessonService {
             throw new LessonCannotBeInThePastException();
         }
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Lesson with id={0} not found", lessonId)));
-        lessonRepository.deleteById(lessonId);
         Teacher teacher = lesson.getTeacher();
         LocalDateTime from = dateTime.minusHours(1);
         LocalDateTime to = dateTime.plusHours(1);
 
-        if (lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(teacher, from, to)) {
+        if (lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThanAndIdNot(teacher, from, to, lesson.getId())) {
             throw new TermUnavailableException();
         }
         lesson.setDatetime(dateTime);
