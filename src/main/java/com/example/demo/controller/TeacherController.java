@@ -25,7 +25,7 @@ public class TeacherController {
 
     @GetMapping
     public String getAll(Model model) {
-        model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("teachers", teacherService.findAllActive());
         return "teacher/list";
     }
 
@@ -41,11 +41,19 @@ public class TeacherController {
         return "redirect:/teachers";
     }
 
-    @GetMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        teacherService.deleteById(id);
+//    @GetMapping("/{id}")
+//    public String delete(@PathVariable Long id) {
+//        teacherService.deleteById(id);
+//        return "redirect:/teachers";
+//    }
+
+        @GetMapping("/{id}")
+    public String softDelete(@PathVariable Long id) {
+        teacherService.softDelete(id);
         return "redirect:/teachers";
     }
+
+
 
     /*
      * Ten endpoint jest wywolywany przez AJAX z formularza tworzenia studenta.

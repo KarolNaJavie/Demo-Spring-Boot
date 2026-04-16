@@ -19,8 +19,8 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
 
     @Transactional(readOnly = true)
-    public List<Teacher> findAll() {
-        return teacherRepository.findAll();
+    public List<Teacher> findAllActive() {
+        return teacherRepository.findAllByDeletedFalse();
     }
 
     @Transactional
@@ -41,5 +41,12 @@ public class TeacherService {
     @Transactional(readOnly = true)
     public List<Teacher> findAllByLanguage(Language language) {
         return teacherRepository.findAllByLanguagesContaining(language);
+    }
+
+    @Transactional
+    public void softDelete(Long id) {
+        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", id)));
+        teacher.setDeleted(true);
+//        teacherRepository.save(teacher);
     }
 }

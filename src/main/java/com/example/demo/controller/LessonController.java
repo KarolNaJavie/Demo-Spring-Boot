@@ -31,7 +31,7 @@ public class LessonController {
 
     @GetMapping("/create")
     public String createNew(Model model) {
-        model.addAttribute("teachers", teacherService.findAll());
+        model.addAttribute("teachers", teacherService.findAllActive());
         return "lesson/create";
     }
 

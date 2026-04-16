@@ -71,48 +71,81 @@
 </div>
 </body>
 </html>
-
 <script type="text/javascript">
-    /*
-     * AJAX - Asynchronous JavaScript And XML
-     *
-     * Normalnie kazde klikniecie w formularzu wysyla request i strona sie przeladowuje.
-     * AJAX pozwala wyslac request HTTP do serwera W TLE - bez przeladowania strony.
-     * Serwer odpowiada danymi (tu: JSON), a my aktualizujemy tylko fragment HTML.
-     *
-     * Przyklad co sie dzieje gdy uzytkownik wybierze "JAVA":
-     *   1. Przegladarka wywoluje populateTeachers()
-     *   2. Funkcja wysyla GET /teachers?language=JAVA do naszego serwera
-     *   3. TeacherController.findAllByLanguage() zwraca List<TeacherDto> jako JSON
-     *   4. Funkcja odbiera JSON i wstawia opcje do dropdowna nauczycieli
-     *   - caly czas jestesmy na tej samej stronie, nic sie nie przeladuje
-     */
-    function populateTeachers(lSelectId, tSelectId) {
-        // Pobieramy referencje do obu elementow HTML <select> po ich id
-        let lSelect = document.getElementById(lSelectId);
-        let tSelect = document.getElementById(tSelectId);
+    const registerLanguageSelect = document.getElementById('language');
+    const registerTeacherSelect = document.getElementById('teacherId');
 
-        // Budujemy URL do naszego endpointu w TeacherController
-        // np. jezeli wybrano JAVA, url = "/teachers?language=JAVA"
-        let url = "/teachers?language=" + lSelect.value;
+    async function populateTeachers(language, selectedTeacherId = null) {
+        if (!language) {
+            registerTeacherSelect.innerHTML = '<option value="">-- Najpierw wybierz język --</option>';
+            return;
+        }
 
-        // $.getJSON() - funkcja jQuery wysylajaca asynchroniczny GET request
-        // Gdy serwer odpowie, zostanie wywolana funkcja zwrotna (callback) z parametrem "teachers"
-        // "teachers" to tablica obiektow JSON np. [{id:1, firstName:"Jan", lastName:"Kowalski"}, ...]
-        $.getJSON(url, function(teachers) {
+        const response = await fetch(/teachers?language=${encodeURIComponent(language)});
+        const teachers = await response.json();
 
-            // Resetujemy zawartosc dropdowna - usuwamy stare opcje
-            tSelect.innerHTML = '<option value="" disabled selected>select teacher</option>';
+        registerTeacherSelect.innerHTML = '<option value="">-- Wybierz nauczyciela --</option>';
 
-            // Iterujemy po kazdym nauczycielu zwroconym przez serwer
-            teachers.forEach(teacher => {
-                // Tworzymy HTML dla jednej opcji - value to id nauczyciela (pojdzie jako teacherId do kontrolera)
-                // tekst to imie i nazwisko widoczne dla uzytkownika
-                let option = '<option value="' + teacher.id + '">' + teacher.firstName + ' ' + teacher.lastName + '</option>';
+        if (teachers.length === 0) {
+            registerTeacherSelect.innerHTML = '<option value="">-- Brak dostępnych nauczycieli --</option>';
+            return;
+        }
 
-                // Dopisujemy opcje do dropdowna
-                tSelect.innerHTML += option;
-            })
-        })
+        teachers.forEach(teacher => {
+            const option = document.createElement('option');
+            option.value = teacher.id;
+            option.textContent = ${teacher.firstName} ${teacher.lastName} ${teacher.languages};
+            option.selected = selectedTeacherId !== null && teacher.id === Number(selectedTeacherId);
+            registerTeacherSelect.appendChild(option);
+        });
     }
+
+    registerLanguageSelect.addEventListener('change', function () {
+        populateTeachers(this.value);
+    });
 </script>
+
+<!--<script type="text/javascript">-->
+<!--    /*-->
+<!--     * AJAX - Asynchronous JavaScript And XML-->
+<!--     *-->
+<!--     * Normalnie kazde klikniecie w formularzu wysyla request i strona sie przeladowuje.-->
+<!--     * AJAX pozwala wyslac request HTTP do serwera W TLE - bez przeladowania strony.-->
+<!--     * Serwer odpowiada danymi (tu: JSON), a my aktualizujemy tylko fragment HTML.-->
+<!--     *-->
+<!--     * Przyklad co sie dzieje gdy uzytkownik wybierze "JAVA":-->
+<!--     *   1. Przegladarka wywoluje populateTeachers()-->
+<!--     *   2. Funkcja wysyla GET /teachers?language=JAVA do naszego serwera-->
+<!--     *   3. TeacherController.findAllByLanguage() zwraca List<TeacherDto> jako JSON-->
+<!--     *   4. Funkcja odbiera JSON i wstawia opcje do dropdowna nauczycieli-->
+<!--     *   - caly czas jestesmy na tej samej stronie, nic sie nie przeladuje-->
+<!--     */-->
+<!--    function populateTeachers(lSelectId, tSelectId) {-->
+<!--        // Pobieramy referencje do obu elementow HTML <select> po ich id-->
+<!--        let lSelect = document.getElementById(lSelectId);-->
+<!--        let tSelect = document.getElementById(tSelectId);-->
+
+<!--        // Budujemy URL do naszego endpointu w TeacherController-->
+<!--        // np. jezeli wybrano JAVA, url = "/teachers?language=JAVA"-->
+<!--        let url = "/teachers?language=" + lSelect.value;-->
+
+<!--        // $.getJSON() - funkcja jQuery wysylajaca asynchroniczny GET request-->
+<!--        // Gdy serwer odpowie, zostanie wywolana funkcja zwrotna (callback) z parametrem "teachers"-->
+<!--        // "teachers" to tablica obiektow JSON np. [{id:1, firstName:"Jan", lastName:"Kowalski"}, ...]-->
+<!--        $.getJSON(url, function(teachers) {-->
+
+<!--            // Resetujemy zawartosc dropdowna - usuwamy stare opcje-->
+<!--            tSelect.innerHTML = '<option value="" disabled selected>select teacher</option>';-->
+
+<!--            // Iterujemy po kazdym nauczycielu zwroconym przez serwer-->
+<!--            teachers.forEach(teacher => {-->
+<!--                // Tworzymy HTML dla jednej opcji - value to id nauczyciela (pojdzie jako teacherId do kontrolera)-->
+<!--                // tekst to imie i nazwisko widoczne dla uzytkownika-->
+<!--                let option = '<option value="' + teacher.id + '">' + teacher.firstName + ' ' + teacher.lastName + '</option>';-->
+
+<!--                // Dopisujemy opcje do dropdowna-->
+<!--                tSelect.innerHTML += option;-->
+<!--            })-->
+<!--        })-->
+<!--    }-->
+<!--</script>-->

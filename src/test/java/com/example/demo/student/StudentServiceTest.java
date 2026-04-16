@@ -47,8 +47,8 @@ public class StudentServiceTest {
         Student student3 = Student.builder().build();
         List<Student> students = List.of(student1, student2, student3);
 
-        when(studentService.findAll()).thenReturn(students);
-        List<Student> saved = studentService.findAll();
+        when(studentService.findAllActive()).thenReturn(students);
+        List<Student> saved = studentService.findAllActive();
         verify(studentRepository).findAll();
 
         assertEquals(saved, students);

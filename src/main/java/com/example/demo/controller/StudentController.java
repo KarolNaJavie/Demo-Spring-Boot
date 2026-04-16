@@ -26,7 +26,7 @@ public class StudentController {
 
     @GetMapping
     public String getAll(Model model) {
-        model.addAttribute("students", studentService.findAll());
+        model.addAttribute("students", studentService.findAllActive());
         return "student/list";
     }
 
@@ -42,9 +42,15 @@ public class StudentController {
         return "redirect:/students";
     }
 
+//    @GetMapping("/{id}")
+//    public String delete(@PathVariable Long id) {
+//        studentService.deleteById(id);
+//        return "redirect:/students";
+//    }
+
     @GetMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        studentService.deleteById(id);
+    public String softDelete(@PathVariable Long id) {
+        studentService.softDelete(id);
         return "redirect:/students";
     }
 

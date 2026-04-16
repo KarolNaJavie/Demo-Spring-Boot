@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     List<Teacher> findAllByLanguagesContaining(Language language);
+
+    List<Teacher> findAllByDeletedFalse();
 }

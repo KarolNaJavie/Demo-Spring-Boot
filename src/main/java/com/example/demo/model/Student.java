@@ -28,6 +28,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+private boolean deleted = false;
 
     private String firstName;
     private String lastName;
