@@ -5,6 +5,7 @@ import com.example.demo.model.common.exception.LanguageMismatch;
 import com.example.demo.model.common.exception.LessonCannotBeInThePastException;
 import com.example.demo.model.common.exception.LessonHasAlreadyStartedException;
 import com.example.demo.model.common.exception.TermUnavailableException;
+import com.example.demo.model.dto.LessonDTO;
 import com.example.demo.repository.LessonRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
@@ -25,28 +26,36 @@ public class LessonService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
-    public List<Lesson> findAll() {
-        return lessonRepository.findAll();
+    public List<LessonDTO> findAll() {
+
+        return lessonRepository.findAll()
+                .stream()
+                .map(LessonDTO::fromEntity)
+                .toList();
     }
 
     @Transactional
-    public void save(Lesson lesson, long studentId, long teacherId) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Student with id={0} not found", studentId)));
-        Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", teacherId)));
-        if (lesson.getDatetime().isBefore(LocalDateTime.now())) {
+    public LessonDTO save(CreateLessonCommand createLessonCommand) {
+        Student student = studentRepository.findByIdAndDeletedFalse(createLessonCommand.getStudentId()).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Student with id={0} not found", createLessonCommand.getStudentId())));
+        Teacher teacher = teacherRepository.findByIdAndDeletedFalse(createLessonCommand.getTeacherId()).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", createLessonCommand.getTeacherId())));
+        if (createLessonCommand.getDatetime().isBefore(LocalDateTime.now())) {
             throw new LessonCannotBeInThePastException();
         }
-        LocalDateTime from = lesson.getDatetime().minusHours(1);
-        LocalDateTime to = lesson.getDatetime().plusHours(1);
+        LocalDateTime from = createLessonCommand.getDatetime().minusHours(1);
+        LocalDateTime to = createLessonCommand.getDatetime().plusHours(1);
         if (lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(teacher, from, to)) {
             throw new TermUnavailableException();
         }
         if (!teacher.getLanguages().contains(student.getLanguage())) {
             throw new LanguageMismatch();
         }
-        lesson.setStudent(student);
-        lesson.setTeacher(teacher);
-        lessonRepository.save(lesson);
+        Lesson lesson = Lesson
+                .builder()
+                .datetime(createLessonCommand.getDatetime())
+                .teacher(teacher)
+                .student(student)
+                .build();
+        return LessonDTO.fromEntity(lessonRepository.save(lesson));
     }
 
     @Transactional

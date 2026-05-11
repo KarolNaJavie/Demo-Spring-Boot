@@ -1,19 +1,19 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.CreateLessonCommand;
 import com.example.demo.model.Lesson;
+import com.example.demo.model.dto.LessonDTO;
 import com.example.demo.service.LessonService;
 import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,27 +24,19 @@ public class LessonController {
     private final TeacherService teacherService;
 
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("lessons", lessonService.findAll());
-        return "lesson/list";
+    public List<LessonDTO> getAll() {
+        return lessonService.findAll();
     }
 
-    @GetMapping("/create")
-    public String createNew(Model model) {
-        model.addAttribute("teachers", teacherService.findAllActive());
-        return "lesson/create";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public LessonDTO create(CreateLessonCommand createLessonCommand) {
+        return lessonService.save(createLessonCommand);
     }
 
-    @PostMapping("/create")
-    public String save(Lesson lesson, @RequestParam long studentId, @RequestParam long teacherId) {
-        lessonService.save(lesson, studentId, teacherId);
-        return "redirect:/lessons";
-    }
-
-    @GetMapping("/{id}")
-    public String delete(@PathVariable Long id) {
+    @DeleteMapping
+    public void delete(@PathVariable Long id) {
         lessonService.deleteById(id);
-        return "redirect:/lessons";
     }
 
     @GetMapping("/{id}/update")

@@ -1,22 +1,19 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.CreateTeacherCommand;
 import com.example.demo.model.common.Language;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.service.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/teachers")
 public class TeacherController {
@@ -24,21 +21,14 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("teachers", teacherService.findAllActive());
-        return "teacher/list";
+    public List<TeacherDTO> getAll() {
+        return teacherService.findAllActive();
     }
 
-    @GetMapping("/create")
-    public String createNew(Model model) {
-        model.addAttribute("languages", Language.values());
-        return "teacher/register";
-    }
-
-    @PostMapping("/create")
-    public String save(Teacher teacher) {
-        teacherService.save(teacher);
-        return "redirect:/teachers";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TeacherDTO create(CreateTeacherCommand createTeacherCommand) {
+        return teacherService.save(createTeacherCommand);
     }
 
 //    @GetMapping("/{id}")
@@ -47,12 +37,11 @@ public class TeacherController {
 //        return "redirect:/teachers";
 //    }
 
-        @GetMapping("/{id}")
-    public String softDelete(@PathVariable Long id) {
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void softDelete(@PathVariable Long id) {
         teacherService.softDelete(id);
-        return "redirect:/teachers";
     }
-
 
 
     /*
@@ -70,8 +59,6 @@ public class TeacherController {
     @GetMapping(params = "language")
     @ResponseBody
     public List<TeacherDTO> findAllByLanguage(@RequestParam Language language) {
-        return teacherService.findAllByLanguage(language).stream()
-                .map(TeacherDTO::fromEntity)
-                .toList();
+        return teacherService.findAllByLanguage(language);
     }
 }

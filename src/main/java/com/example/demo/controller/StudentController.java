@@ -1,19 +1,16 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.CreateStudentCommand;
 import com.example.demo.model.common.Language;
 import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.dto.StudentDTO;
 import com.example.demo.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,21 +22,14 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("students", studentService.findAllActive());
-        return "student/list";
+    public List<StudentDTO> getAll() {
+       return studentService.findAllActive();
     }
 
-    @GetMapping("/create")
-    public String createNew(Model model) {
-        model.addAttribute("languages", Language.values());
-        return "student/register";
-    }
-
-    @PostMapping("/create")
-    public String save(Student student, @RequestParam long teacherId) {
-        studentService.save(student, teacherId);
-        return "redirect:/students";
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudentDTO create(CreateStudentCommand createStudentCommand) {
+        return studentService.save(createStudentCommand);
     }
 
 //    @GetMapping("/{id}")
@@ -48,10 +38,9 @@ public class StudentController {
 //        return "redirect:/students";
 //    }
 
-    @GetMapping("/{id}")
-    public String softDelete(@PathVariable Long id) {
+    @DeleteMapping
+    public void softDelete(@PathVariable Long id) {
         studentService.softDelete(id);
-        return "redirect:/students";
     }
 
     /*
@@ -64,6 +53,8 @@ public class StudentController {
      *
      * @ResponseBody - zwracamy JSON, nie widok Thymeleaf.
      */
+
+//    wrocic tu!
     @GetMapping(params = "teacher")
     @ResponseBody
     public List<StudentDTO> findAllByTeacher(@RequestParam Teacher teacher) {

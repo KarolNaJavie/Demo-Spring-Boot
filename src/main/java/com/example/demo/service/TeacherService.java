@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.model.CreateTeacherCommand;
 import com.example.demo.model.common.Language;
 import com.example.demo.model.Teacher;
+import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -19,13 +21,16 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
 
     @Transactional(readOnly = true)
-    public List<Teacher> findAllActive() {
-        return teacherRepository.findAllByDeletedFalse();
+    public List<TeacherDTO> findAllActive() {
+        return teacherRepository.findAllByDeletedFalse()
+                .stream()
+                .map(TeacherDTO::fromEntity)
+                .toList();
     }
 
     @Transactional
-    public void save(Teacher teacher) {
-        teacherRepository.save(teacher);
+    public TeacherDTO save(CreateTeacherCommand createTeacherCommand) {
+        return TeacherDTO.fromEntity(teacherRepository.save(createTeacherCommand.toEntity()));
     }
 
     @Transactional
@@ -34,13 +39,17 @@ public class TeacherService {
     }
 
     @Transactional(readOnly = true)
-    public Teacher findById(Long id) {
-        return teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", id)));
+    public TeacherDTO findById(Long id) {
+        return teacherRepository.findById(id).map(TeacherDTO::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", id)));
     }
 
     @Transactional(readOnly = true)
-    public List<Teacher> findAllByLanguage(Language language) {
-        return teacherRepository.findAllByLanguagesContaining(language);
+    public List<TeacherDTO> findAllByLanguage(Language language) {
+        return teacherRepository.findAllByLanguagesContaining(language)
+                .stream()
+                .map(TeacherDTO::fromEntity)
+                .toList();
     }
 
     @Transactional

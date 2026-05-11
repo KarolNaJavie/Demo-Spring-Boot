@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.model.CreateStudentCommand;
 import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
+import com.example.demo.model.dto.StudentDTO;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,17 +23,19 @@ public class StudentService {
     private final TeacherRepository teacherRepository;
 
     @Transactional(readOnly = true)
-    public List<Student> findAllActive() {
-        return studentRepository.findAllByDeletedFalse();
+    public List<StudentDTO> findAllActive() {
+        return studentRepository.findAllByDeletedFalse()
+                .stream()
+                .map(StudentDTO::fromEntity)
+                .toList();
     }
 
     @Transactional
-    public void save(Student student, Long teacherId) {
-        Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new EntityNotFoundException(MessageFormat
-                        .format("Teacher with id={0} not found", teacherId)));
+    public StudentDTO save(CreateStudentCommand createStudentCommand) {
+        Teacher teacher = teacherRepository.findById(createStudentCommand.getTeacherId()).orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+        Student student = createStudentCommand.toEntity();
         student.setTeacher(teacher);
-        studentRepository.save(student);
+        return StudentDTO.fromEntity(studentRepository.save(student));
     }
 
     @Transactional
