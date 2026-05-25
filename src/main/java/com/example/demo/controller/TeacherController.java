@@ -5,6 +5,7 @@ import com.example.demo.model.common.Language;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.service.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -26,8 +27,8 @@ public class TeacherController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public TeacherDTO create(CreateTeacherCommand createTeacherCommand) {
+    @ResponseStatus(HttpStatus.CREATED)  // dodac validacje
+    public TeacherDTO create(@RequestBody @Valid CreateTeacherCommand createTeacherCommand) {
         return teacherService.save(createTeacherCommand);
     }
 
