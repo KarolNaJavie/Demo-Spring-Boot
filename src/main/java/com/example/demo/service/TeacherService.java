@@ -7,6 +7,7 @@ import com.example.demo.model.dto.TeacherDTO;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +58,14 @@ public class TeacherService {
         Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", id)));
         teacher.setDeleted(true);
 //        teacherRepository.save(teacher);
+    }
+
+    public TeacherDTO update(@Valid CreateTeacherCommand command, Long id) {
+        Teacher teacher = teacherRepository.findByIdAndDeletedFalse(id).orElseThrow(() ->
+                new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", id)));
+        teacher.setFirstName(command.getFirstName());
+        teacher.setLastName(command.getLastName());
+        teacher.setLanguages(command.getLanguages());
+        return TeacherDTO.fromEntity(teacherRepository.save(teacher));
     }
 }

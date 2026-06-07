@@ -145,13 +145,15 @@ class LessonServiceTest {
 
     @Test
     void testSave_HappyPath_ResultsInLessonBeingSavedWithTeacherAndStudent() {
-        Teacher teacher = Teacher.builder().id(1L).build();
-        Student student = Student.builder().id(1L).build();
+        Teacher teacher = Teacher.builder().languages(Set.of(Language.C)).id(1L).build();
+        Student student = Student.builder().language(Language.C).id(1L).build();
 //        Lesson lesson = Lesson.builder().teacher(teacher).student(student).datetime(LocalDateTime.now().plusHours(1)).build();
-        CreateLessonCommand createLessonCommand = CreateLessonCommand.builder().teacherId(1L).studentId(1L).build();
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
+        CreateLessonCommand createLessonCommand = CreateLessonCommand.builder().datetime(LocalDateTime.now().plusDays(10)).teacherId(1L).studentId(1L).build();
+        when(studentRepository.findByIdAndDeletedFalse(1L))
+                .thenReturn(Optional.of(student));
 
+        when(teacherRepository.findByIdAndDeletedFalse(1L))
+                .thenReturn(Optional.of(teacher));
         lessonService.save(createLessonCommand);
         verify(lessonRepository).save(lessonArgumentCaptor.capture());
         Lesson result = lessonArgumentCaptor.getValue();
@@ -220,8 +222,8 @@ class LessonServiceTest {
 //        Lesson lesson = Lesson.builder().datetime(LocalDateTime.now().plusHours(1)).build();
         CreateLessonCommand createLessonCommand = CreateLessonCommand.builder().teacherId(1L).studentId(1L).datetime(LocalDateTime.now().plusHours(1)).build();
         String exceptionMsg = "This date is not available";
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(studentRepository.findById(any())).thenReturn(Optional.of(student));
+        when(teacherRepository.findById(any())).thenReturn(Optional.of(teacher));
         when(lessonRepository.existsByTeacherAndDatetimeGreaterThanAndDatetimeLessThan(any(), any(), any())).thenReturn(true);
         assertThatExceptionOfType(TermUnavailableException.class).isThrownBy(() -> lessonService.save(createLessonCommand)).withMessage(exceptionMsg);
         //             czy nigdy nie bylo uzyte save, repository jest uzywane do existby...

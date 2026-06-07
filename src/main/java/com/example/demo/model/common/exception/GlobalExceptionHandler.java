@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(LessonCannotBeInThePastException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionDTO handleLessonCannotBeInThePastEception(LessonCannotBeInThePastException exception) {
+    public ExceptionDTO handleLessonCannotBeInThePastException(LessonCannotBeInThePastException exception) {
         return new ExceptionDTO(exception.getMessage());
     }
 
