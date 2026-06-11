@@ -13,17 +13,16 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -53,7 +52,7 @@ public class LessonControllerTest {
         lessonRepository.save(Lesson.builder()
                 .teacher(teacherRepository.save(Teacher.builder().firstName("Adrina").lastName("Test").deleted(false).build()))
                 .student(studentRepository.save(Student.builder().firstName("Adrina").lastName("Test").deleted(false).build()))
-                .datetime(LocalDateTime.of(2026, 6, 7, 20, 15))
+                .datetime(LocalDateTime.now().plusDays(1))
                 .build());
 
         mockMvc.perform(get("/lessons"))
@@ -67,7 +66,7 @@ public class LessonControllerTest {
         lessonRepository.save(Lesson.builder()
                 .teacher(teacherRepository.save(Teacher.builder().firstName("Adrina").lastName("Test").deleted(false).build()))
                 .student(studentRepository.save(Student.builder().firstName("Adrina").lastName("Test").deleted(false).build()))
-                .datetime(LocalDateTime.of(2026, 6, 7, 20, 15))
+                .datetime(LocalDateTime.now().plusDays(1))
                 .build());
         mockMvc.perform(delete("/lessons/{id}", 1L))
                 .andExpect(status().isNoContent());

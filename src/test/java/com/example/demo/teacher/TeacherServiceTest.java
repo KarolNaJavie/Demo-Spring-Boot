@@ -43,23 +43,23 @@ public class TeacherServiceTest {
 
     @Test
     void testFindAll_HappyPath_ResultsInAllTeachersBeingFound() {
-        TeacherDTO teacher1 = TeacherDTO.builder().build();
-        TeacherDTO teacher2 = TeacherDTO.builder().build();
-        TeacherDTO teacher3 = TeacherDTO.builder().build();
-        List<TeacherDTO> teachers = List.of(teacher1, teacher2, teacher3);
+        Teacher teacher1 = Teacher.builder().id(1L).build();
+        Teacher teacher2 = Teacher.builder().id(2L).build();
+        Teacher teacher3 = Teacher.builder().id(3L).build();
+        List<Teacher> teachers = List.of(teacher1, teacher2, teacher3);
 
-        when(teacherService.findAllActive()).thenReturn(teachers);
+        when(teacherRepository.findAllByDeletedFalse()).thenReturn(teachers);
 
         List<TeacherDTO> saved = teacherService.findAllActive();
 
-        verify(teacherRepository).findAll();
-        assertEquals(saved, teachers);
+        verify(teacherRepository).findAllByDeletedFalse();
+        assertEquals(saved.get(0).getId(), teachers.get(0).getId());
     }
 
     @Test
     void testFindAllByLanguage_HappyPath_ResultsInAllTeachersByLanguageBeingFound() {
         Language c = Language.C;
-        Teacher teacher1 = Teacher.builder().languages(Set.of(c)).build();
+        Teacher teacher1 = Teacher.builder().id(1L).languages(Set.of(c)).build();
 
         //when - symulujemy bazy
         when(teacherRepository.findAllByLanguagesContaining(c)).thenReturn(List.of(teacher1));

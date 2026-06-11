@@ -84,7 +84,7 @@ public class TeacherControllerTest {
                         .content(body))
                 .andDo(print())
                 .andExpect(jsonPath("$.firstName", is("Jan")))
-                .andExpect(jsonPath("$.lastName", is("Biedronka")));
+                .andExpect(jsonPath("$.lastName", is("Stonoga")));
         mockMvc.perform(get("/teachers"))
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$", contains(body)));

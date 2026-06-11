@@ -1,7 +1,6 @@
 package com.example.demo.student;
 
 import com.example.demo.model.CreateStudentCommand;
-import com.example.demo.model.CreateTeacherCommand;
 import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.common.Language;
@@ -26,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -34,7 +34,7 @@ public class StudentService {
 
     @Transactional
     public StudentDTO save(CreateStudentCommand createStudentCommand) {
-        Teacher teacher = teacherRepository.findById(createStudentCommand.getTeacherId()).orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+        Teacher teacher = teacherRepository.findByIdAndDeletedFalse(createStudentCommand.getTeacherId()).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", createStudentCommand.getTeacherId())));
         Student student = createStudentCommand.toEntity();
         validateTeacherLanguage(student, teacher);
         student.setTeacher(teacher);
