@@ -59,7 +59,7 @@ public class LessonService {
     }
 
     @Transactional
-    public void changeDate(long lessonId, LocalDateTime dateTime) {
+    public LessonDTO changeDate(long lessonId, LocalDateTime dateTime) {
         if (dateTime.isBefore(LocalDateTime.now())) {
             throw new LessonCannotBeInThePastException();
         }
@@ -73,6 +73,7 @@ public class LessonService {
         }
         lesson.setDatetime(dateTime);
 //        lessonRepository.save(lesson); //docelowo niepotrzbne przy transactional
+        return LessonDTO.fromEntity(lesson);
     }
 
     @Transactional

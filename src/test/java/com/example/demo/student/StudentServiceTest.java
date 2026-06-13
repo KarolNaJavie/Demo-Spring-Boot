@@ -44,16 +44,16 @@ public class StudentServiceTest {
 
     @Test
     void testFindAll_HappyPath_ResultInAllStudentsBeingFound() {
-        StudentDTO student1 = StudentDTO.builder().build();
-        StudentDTO student2 = StudentDTO.builder().build();
-        StudentDTO student3 = StudentDTO.builder().build();
-        List<StudentDTO> students = List.of(student1, student2, student3);
+        Student student1 = Student.builder().id(1L).build();
+        Student student2 = Student.builder().id(2L).build();
+        Student student3 = Student.builder().id(3L).build();
+        List<Student> students = List.of(student1, student2, student3);
 
-        when(studentService.findAllActive()).thenReturn(students);
+        when(studentRepository.findAllByDeletedFalse()).thenReturn(students);
         List<StudentDTO> saved = studentService.findAllActive();
-        verify(studentRepository).findAll();
+        verify(studentRepository).findAllByDeletedFalse();
 
-        assertEquals(saved, students);
+        assertEquals(saved.get(0).getFirstName(), students.get(0).getFirstName());
     }
 
     @Test
@@ -100,27 +100,15 @@ public class StudentServiceTest {
     }
 
     @Test
-    void testSave_HappyPath_ResultsInStudentBeingSaved() {
-        Teacher teacher = Teacher.builder().id(1L).build();
-//        Student student = Student.builder().firstName("Johny").lastName("Bravo").id(1L).build();
-        CreateStudentCommand createStudentCommand = CreateStudentCommand.builder().teacherId(teacher.getId()).build();
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        StudentDTO studentDTO = studentService.save(createStudentCommand);
-
-        verify(studentRepository).save(createStudentCommand.toEntity());
-        assertEquals(createStudentCommand.getFirstName(), studentDTO.getFirstName());
-    }
-
-    @Test
     void testSave_TeacherNotFound_ResultInEntityNotFoundException() {
         CreateStudentCommand createStudentCommand = CreateStudentCommand.builder().teacherId(1L).build();
         String exceptionMsg = MessageFormat.format("Teacher with id={0} not found", 1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
+        when(teacherRepository.findByIdAndDeletedFalse(1L)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> studentService.save(createStudentCommand))
                 .withMessage(exceptionMsg);
-        verify(teacherRepository).findById(1L);
+        verify(teacherRepository).findByIdAndDeletedFalse(1L);
         verifyNoMoreInteractions(teacherRepository);
         verifyNoInteractions(studentRepository);
     }

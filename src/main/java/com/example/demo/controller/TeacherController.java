@@ -32,13 +32,12 @@ public class TeacherController {
         return teacherService.save(createTeacherCommand);
     }
 
-//    @GetMapping("/{id}")
-//    public String delete(@PathVariable Long id) {
-//        teacherService.deleteById(id);
-//        return "redirect:/teachers";
-//    }
+    @PutMapping("/{id}")
+    public TeacherDTO update(@RequestBody @Valid CreateTeacherCommand command, @PathVariable Long id) {
+        return teacherService.update(command, id);
+    }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void softDelete(@PathVariable Long id) {
         teacherService.softDelete(id);

@@ -4,21 +4,26 @@ import com.example.demo.model.common.Language;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateStudentCommand {
     @NotNull(message = "NULL_VALUE")
     private String firstName;
     @NotNull(message = "NULL_VALUE")
     private String lastName;
-    @NotEmpty(message = "EMPTY_VALUE")
+    @NotNull(message = "EMPTY_VALUE")
     private Language language;
+    @NotNull(message = "NULL_VALUE")
     @Positive(message = "NEGATIVE_VALUE")
-    private long teacherId;
+    private Long teacherId;
 
     public Student toEntity() {
         return Student.builder()

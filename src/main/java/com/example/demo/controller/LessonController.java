@@ -30,25 +30,18 @@ public class LessonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LessonDTO create(CreateLessonCommand createLessonCommand) {
+    public LessonDTO create(@RequestBody CreateLessonCommand createLessonCommand) {
         return lessonService.save(createLessonCommand);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         lessonService.deleteById(id);
     }
 
-    @GetMapping("/{id}/update")
-    public String viewUpdateLesson(@PathVariable Long id, Model model) {
-        Lesson existingLesson = lessonService.findById(id);
-        model.addAttribute("lesson", existingLesson);
-        return "lesson/edit";
-    }
-
-    @PostMapping("/{id}/update")
-    public String updateLesson(@RequestParam Long lessonId, @RequestParam @DateTimeFormat LocalDateTime newDate) {
-        lessonService.changeDate(lessonId, newDate);
-        return "redirect:/lessons";
+    @PutMapping("/{id}")
+    public LessonDTO updateLesson(@PathVariable Long id, @RequestParam @DateTimeFormat LocalDateTime newDate) {
+        return lessonService.changeDate(id, newDate);
     }
 }

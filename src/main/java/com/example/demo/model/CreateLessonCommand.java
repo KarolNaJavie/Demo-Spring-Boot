@@ -11,5 +11,4 @@ public class CreateLessonCommand {
     private LocalDateTime datetime;
     private Long teacherId;
     private Long studentId;
-
 }

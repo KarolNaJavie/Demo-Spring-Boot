@@ -8,19 +8,19 @@ import lombok.Data;
 
 
 import java.time.LocalDateTime;
-
+@Data
 @Builder
 public class LessonDTO {
 
     private LocalDateTime datetime;
-    private Teacher teacher;
-    private Student student;
+    private Long teacherId;
+    private Long studentId;
 
     public static LessonDTO fromEntity(Lesson lesson){
         return LessonDTO.builder()
                 .datetime(lesson.getDatetime())
-                .teacher(lesson.getTeacher())
-                .student(lesson.getStudent())
+                .teacherId(lesson.getTeacher().getId())
+                .studentId(lesson.getStudent().getId())
                 .build();
     }
 }

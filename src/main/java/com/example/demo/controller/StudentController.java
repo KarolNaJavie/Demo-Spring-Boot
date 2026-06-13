@@ -6,6 +6,7 @@ import com.example.demo.model.Student;
 import com.example.demo.model.Teacher;
 import com.example.demo.model.dto.StudentDTO;
 import com.example.demo.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/students")
 public class StudentController {
@@ -23,22 +24,21 @@ public class StudentController {
 
     @GetMapping
     public List<StudentDTO> getAll() {
-       return studentService.findAllActive();
+        return studentService.findAllActive();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StudentDTO create(CreateStudentCommand createStudentCommand) {
+    public StudentDTO create(@RequestBody @Valid CreateStudentCommand createStudentCommand) {
         return studentService.save(createStudentCommand);
     }
 
-//    @GetMapping("/{id}")
-//    public String delete(@PathVariable Long id) {
-//        studentService.deleteById(id);
-//        return "redirect:/students";
-//    }
+    @PutMapping("/{id}")
+    public StudentDTO update(@RequestBody @Valid CreateStudentCommand command, @PathVariable Long id) {
+        return studentService.update(command, id);
+    }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void softDelete(@PathVariable Long id) {
         studentService.softDelete(id);
     }
@@ -54,7 +54,7 @@ public class StudentController {
      * @ResponseBody - zwracamy JSON, nie widok Thymeleaf.
      */
 
-//    wrocic tu!
+    //    wrocic tu!
     @GetMapping(params = "teacher")
     @ResponseBody
     public List<StudentDTO> findAllByTeacher(@RequestParam Teacher teacher) {
