@@ -87,7 +87,6 @@ public class TeacherControllerTest {
                 .andExpect(jsonPath("$.lastName", is("Stonoga")));
         mockMvc.perform(get("/teachers"))
                 .andExpect(status().isOk());
-//                .andExpect(jsonPath("$", contains(body)));
     }
 
     @Test
@@ -98,6 +97,4 @@ public class TeacherControllerTest {
                 .andExpect(status().isNoContent());
 
     }
-
-    // dokonczyc testy dla wszystkich endpointow
 }

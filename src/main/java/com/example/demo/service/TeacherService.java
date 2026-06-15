@@ -57,7 +57,6 @@ public class TeacherService {
     public void softDelete(Long id) {
         Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Teacher with id={0} not found", id)));
         teacher.setDeleted(true);
-//        teacherRepository.save(teacher);
     }
 
     public TeacherDTO update(@Valid CreateTeacherCommand command, Long id) {
